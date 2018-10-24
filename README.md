@@ -29,18 +29,18 @@ This simple example logs you in into FileCloud and creates a new folder.
 
  Calling APIs will either return a collection object which contains different records or an individual record object where only one record is returned. Collection objects can contain a meta record object that contains general information about the records returned. They also can contain a number of data record objects.
  
-  [Collection]
-    |
-    +---------------[Meta Record]
-    |
-    +---------------[1 ..n Data Records]
+  [Collection]  
+  
+      +--------------- [Meta Record]
+      +--------------- [1 ..n Data Records]
   
   Depending upon the API, you might get different types of Data Records Back
   Refer to the API documentation to understand which record type is being returned
  
  For example, here's a non-exhaustive list of types of records that can be returned
+ 
  [DataRecord]
-     |
+  
      +----------- [CommandRecord]
      +----------- [FolderPropertiesRecord]
      +----------- [AuthenticationRecord]
