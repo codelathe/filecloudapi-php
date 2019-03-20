@@ -2,6 +2,6 @@
   "name": "codelathe/example2",
   "type": "project",
   "require": {
-    "codelathe/filecloudapi-php": "dev-master"
+    "codelathe/filecloudapi-php": "*"
   }
 }

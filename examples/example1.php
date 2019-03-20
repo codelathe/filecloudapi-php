@@ -3,21 +3,17 @@
 require_once dirname(__FILE__, 2) . "/fccloudapi.php";
 
 use codelathe\fccloudapi\CloudAPI;
-//
-//define('SERVER_URL', 'https://syourserverurl.com');
-//define('USERNAME', 'yourusername');
-//define('PASSWORD', 'yourpassword');
-//define('FOLDER_NAME', 'mynewfolder');
-define('SERVER_URL', 'https://dev1.codelathe.com');
-define('USERNAME', 'jeferson.almeida');
-define('PASSWORD', '1@oBeliKs');
-define('FOLDER_NAME', 'mynewfolder2');
 
+// change those values to fit your env
+define('SERVER_URL', 'https://syourserverurl.com');
+define('USERNAME', 'yourusername');
+define('PASSWORD', 'yourpassword');
+define('FOLDER_NAME', 'mynewfolder');
 
-// ... Cloud Server, change the URL to your FileCloud Server URL
+// ... Cloud Server
 $cloudAPI = new CloudAPI(SERVER_URL);
 
-// ... Login the User, change the username and password accordingly
+// ... Login the User
 $record = $cloudAPI->loginGuest(USERNAME, PASSWORD);
 
 // ... Check if the result is OK
@@ -29,7 +25,7 @@ else {
 }
 
 
-// ... Create a new folder, make sure to change the parent path to be the same as the username
+// ... Create a new folder
 $record = $cloudAPI->createFolder('/' . USERNAME, FOLDER_NAME);
 
 if ($record->getResult() == '1')
