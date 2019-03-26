@@ -97,7 +97,9 @@ class Collection {
                 }
 
                 if ($name == $recordName) {
-					$recordType = '\codelathe\fccloudapi\\'.$recordType;
+                    if (substr($recordType,0,strlen("\codelathe")) != "\codelathe" ) {
+					    $recordType = '\codelathe\fccloudapi\\'.$recordType;
+                    }
                     $this->m_records[] = new $recordType($array);
                 } else if ($meta != "" && $name == $meta) {
                     $this->m_meta = new DataRecord($array);
