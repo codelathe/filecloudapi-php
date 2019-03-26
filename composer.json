@@ -1,0 +1,14 @@
+{
+    "name": "codelathe/filecloudapi-php",
+    "description": "FileCloud API client Wrapper",
+    "type": "library",
+    "license": "Apache-2.0",
+    "require": {
+      "php": "^7.1"
+    },
+    "autoload": {
+        "files": [
+            "fccloudapi.php"
+        ]
+    }
+}

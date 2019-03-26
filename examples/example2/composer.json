@@ -1,0 +1,7 @@
+{
+  "name": "codelathe/example2",
+  "type": "project",
+  "require": {
+    "codelathe/filecloudapi-php": "*"
+  }
+}

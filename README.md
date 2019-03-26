@@ -16,14 +16,42 @@ The filecloudapi-php code requires a correctly configured PHP 7.1 environment ei
 
  - PHP curl is required
  - PHP SimpleXML Parser is required
+ 
+There are two ways to include this library on your system:
+
+##### Manual Require
+
+If you can't (or just don't want) to setup composer on your project, you can just require the file `fccloudapi.php` on
+your code, and you'll be ready to go.
+
+Take a look on `example1.php` to see it live.
+
+##### Composer
+
+If you have composer set up on your code, all you have to do is `composer require codelathe/filecloudapi-php`,
+or include `codelathe/filecloudapi-php` on your `composer.json` file, on the `require` section, and run `composer
+update`. You'll should be good to go, since the library will be included on you composer autoloader.
+
+You can take a look on example2 to understand how it works with composer.
 
 ### Development
 
-To get started, modify the example1.php and change the server URL, USERNAME and PASSWORD:
+To get started, look at the examples folder. Booth examples there just logs you in into FileCloud and creates a new 
+folder.
+
+##### example1 - Manual Require
+Look inside `example1.php` and change the constant values at the top of the file. Them execute it:
 ```sh
 $ php example1.php
 ```
-This simple example logs you in into FileCloud and creates a new folder.
+
+##### example2 - Composer
+Go to `example2` folder, and run composer install. It will create the `vendor` folder and the `composer.lock` file.
+Look inside `index.php` anc change the constant values at the top of the file, and execute it:
+```sh
+$ php index.php
+```
+This example just simulates a project using FileCloudAPI client-library as a dependency. 
 
 ### More Information
 
