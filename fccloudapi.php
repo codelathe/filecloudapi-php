@@ -97,7 +97,6 @@ class Collection {
                 }
 
                 if ($name == $recordName) {
-					$recordType = '\codelathe\fccloudapi\\'.$recordType;
                     $this->m_records[] = new $recordType($array);
                 } else if ($meta != "" && $name == $meta) {
                     $this->m_meta = new DataRecord($array);
@@ -1788,7 +1787,7 @@ class APICore {
         $result,$out, PREG_PATTERN_ORDER);
         $buffer = $out[0][0].$out[0][1].$out[0][2].$out[0][3];
         
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer, "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)    
         {
             $result = $collection->getRecords()[0]->getResult();
@@ -1948,7 +1947,7 @@ class CloudAPI extends APICore {
         $this->startTimer();
         $url = $this->server_url . "/core/getauthenticationinfo";
         $buffer = $this->doGET($url);
-        $collection = new Collection($buffer, "info", "AuthenticationRecord");
+        $collection = new Collection($buffer,  "info", AuthenticationRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -1964,7 +1963,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/loginguest";
         $postdata = 'password=' . $password . '&userid=' . $user;
         $buffer = $this->doPOSTWithHeader($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer, "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -1976,7 +1975,7 @@ class CloudAPI extends APICore {
 	$url = $this->server_url . "/core/loginguest";
 	$postdata = 'password=' . $password . '&userid=' . $user;
 	$buffer = $this->doPOSTWithAgent($url, $postdata, $this->user_agent);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
         return NULL;
@@ -1988,7 +1987,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/app/explorer/createfolder";
         $postdata = 'name=' . $name . '&path=' . $path;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2002,7 +2001,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/deletefile";
         $postdata = 'name=' . $name . '&path=' . $path;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2016,7 +2015,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/2falogin";
         $postdata = 'userid=' . $userid . '&code=' . $code . '&token=' . $token;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2032,7 +2031,7 @@ class CloudAPI extends APICore {
         $buffer = $this->doPOST($url, $postdata);
 		//$this->cookie_data = array();
 		$this->xsrf_token = "";
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2046,7 +2045,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/resend2facode";
         $postdata = 'userid=' . $userid . '&token=' . $token;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2067,7 +2066,7 @@ class CloudAPI extends APICore {
         }
         $postdata = 'path=' . $path . $expiration . $readlock;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2081,7 +2080,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/unlock";
         $postdata = 'path=' . $path;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2095,7 +2094,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/showhideactivity";
         $postdata = 'collapse=' . $collapse;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2109,13 +2108,13 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/addcommentforitem";
         $postdata = 'fullpath=' . $fullpath . '&parent=' . $parent . '&isfile=' . $isfile . '&text=' . $text;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "comment", "CommentRecord");
+        $collection = new Collection($buffer,  "comment", CommentRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             $this->stopTimer();
             return $collection->getRecords()[0];
         }
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             $this->stopTimer();
@@ -2132,7 +2131,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/removecommentforitem";
         $postdata = 'fullpath=' . $fullpath . '&id=' . $id;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             $this->stopTimer();
@@ -2146,13 +2145,13 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/updatecommentforitem";
         $postdata = 'fullpath=' . $fullpath . '&id=' . $id;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "comment", "CommentRecord");
+        $collection = new Collection($buffer,  "comment", CommentRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             $this->stopTimer();
             return $collection->getRecords()[0];
         }
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             $this->stopTimer();
@@ -2171,7 +2170,7 @@ class CloudAPI extends APICore {
         }
         $postdata = 'name=' . $name;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2185,7 +2184,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/removefavoritelist";
         $postdata = 'id=' . $id;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2199,7 +2198,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/replacefavoritelist";
         $postdata = 'id=' . $id . '&count=' . $count;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2213,7 +2212,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/setfavorite";
         $postdata = 'id=' . $id . '&name=' . $name;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2227,7 +2226,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/addnotificationfilter";
         $postdata = 'path=' . $path;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2241,7 +2240,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/removenotificationfilter";
         $postdata = 'path=' . $path;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2255,7 +2254,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/isnotificationfilterset";
         $postdata = 'path=' . $path;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2268,7 +2267,7 @@ class CloudAPI extends APICore {
         $this->startTimer();
         $url = $this->server_url . "/core/getprofilesettings";
         $buffer = $this->doPOST($url, '');
-        $collection = new Collection($buffer, "profilesettings", "ProfileRecord");
+        $collection = new Collection($buffer,  "profilesettings", ProfileRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2282,7 +2281,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/updatepassword";
         $postdata = 'oldpassword=' . $oldpassword . '&newpassword=' . $newpassword;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2296,7 +2295,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/setdisplayname";
         $postdata = 'dispname=' . $displayname;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2310,7 +2309,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/getfilelist";
         $postdata = 'path=' . $path . '&start=0&limit=10';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "entry", "EntryRecord", "meta");
+        $collection = new Collection($buffer, "entry", EntryRecord::class, "meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -2331,7 +2330,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/getfilelist";
         $postdata = 'path=' . $path;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2344,7 +2343,7 @@ class CloudAPI extends APICore {
         $this->startTimer();
         $url = $this->server_url . "/core/getlanguagelist";
         $buffer = $this->doPOST($url, '');
-        $collection = new Collection($buffer, "language", "LanguageRecord");
+        $collection = new Collection($buffer,  "language", LanguageRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords();
@@ -2397,7 +2396,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/removefavoritelist";
         $postdata = 'id=' . $id;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2409,7 +2408,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/renamefile";
         $postdata = 'path=' . $path . '&name=' . $name . '&newname=' . $newname;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2421,7 +2420,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/copyfile";
         $postdata = 'path=' . $path . '&name=' . $name . '&copyto=' . $copyto;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2433,7 +2432,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/renameormove";
         $postdata = 'fromname=' . $fromname . '&toname=' . $toname;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2445,7 +2444,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/rotatefsimage";
         $postdata = 'name=' . $name . '&angle=' . $angle;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2457,7 +2456,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/addusertoshare";
         $postdata = 'userid=' . $userid . '&shareid=' . $shareid;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2470,7 +2469,7 @@ class CloudAPI extends APICore {
         $postdata = 'shareid=' . $shareid . '&allowpublicaccess=' . $allowpublicaccess .
                 '&allowpublicupload=' . $allowpublicupload . '&allowpublicviewonly=' . $allowpublicviewonly . '&allowpublicuploadonly=' . $allowpublicuploadonly;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2482,13 +2481,13 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/getshareforpath";
         $postdata = 'path=' . $path;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "share", "ShareRecord");
+        $collection = new Collection($buffer,  "share", ShareRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             $this->stopTimer();
             return $collection->getRecords()[0];
         }
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             $this->stopTimer();
@@ -2502,7 +2501,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/getshareforid";
         $postdata = 'shareid=' . $shareid;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "share", "ShareRecord");
+        $collection = new Collection($buffer,  "share", ShareRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2521,7 +2520,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/deleteshare";
         $postdata = 'shareid=' . $shareid;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2533,7 +2532,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/deleteuserfromshare";
         $postdata = 'userid=' . $userid . '&shareid=' . $shareid;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2545,7 +2544,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/createprofile";
         $postdata = 'profile=' . $profilename . '&email=' . $emailid . '&password=' . $password;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2559,7 +2558,7 @@ class CloudAPI extends APICore {
         $buffer = $this->doPOST($url, $postdata);
 		//$this->cookie_data = array();
 		$this->xsrf_token = "";
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2573,13 +2572,13 @@ class CloudAPI extends APICore {
         $buffer = $this->doPOST($url, $postdata);
         $xml = new SimpleXMLElement($buffer);
         //echo $buffer;
-        $collection = new Collection($buffer, "usage", "FolderPropertiesRecord");
+        $collection = new Collection($buffer,  "usage", FolderPropertiesRecord::class);
         if ($collection->getNumberOfRecords() > 0) 
         {
             $this->stopTimer();
             return $collection;
         }
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             $this->stopTimer();
@@ -2595,7 +2594,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/unsetfavorite";
         $postdata = 'id=' . $favoritelistid . '&name=' . $path;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2608,7 +2607,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/updatefavoritelist";
         $postdata = 'id=' . $favoritelistid . '&name=' . $name;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2621,7 +2620,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/fileexists";
         $postdata = 'file=' . $filepath;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2634,7 +2633,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/fileinfo";
         $postdata = 'file=' . $filepath;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "entry", "EntryRecord");
+        $collection = new Collection($buffer,  "entry", EntryRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2646,7 +2645,7 @@ class CloudAPI extends APICore {
         $postdata = 'sharename=' . $sharename . '&sharelocation=' . $sharelocation .
                 '&allowpublicaccess=' . $allowpublicaccess;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "share", "ShareRecord");
+        $collection = new Collection($buffer,  "share", ShareRecord::class);
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
 
@@ -2658,7 +2657,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/clearfavoritesinnamedlist";
         $postdata = 'name=' . $name;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2673,7 +2672,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/quickshare";
         $postdata = 'sharelocation=' . $sharelocation;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "share", "ShareRecord");
+        $collection = new Collection($buffer,  "share", ShareRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2698,7 +2697,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . '/core/getallfavoritelists';
         $postdata = 'type=' . $type;
         $buffer = $this->doPOST($url, $postdata);
-        return new Collection($buffer, "favoritelist", "FavoriteRecord");
+        return new Collection($buffer,  "favoritelist", FavoriteRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2713,7 +2712,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/getfavoritelistforitem";
         $postdata = 'path=' . $path;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "favoritelist", "FavoriteRecord");
+        $collection = new Collection($buffer,  "favoritelist", FavoriteRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2744,7 +2743,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/addgrouptoshare";
         $postdata = 'groupid=' . $groupid . '&shareid=' . $shareid;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2758,7 +2757,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/deletegroupfromshare";
         $postdata = 'groupid=' . $groupid . '&shareid=' . $shareid;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2772,7 +2771,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/deletegroupfromshare";
         $postdata = 'groupid=' . $groupid . '&shareid=' . $shareid . '&adminproxyuserid=' . $adminproxyuserid ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2787,11 +2786,11 @@ class CloudAPI extends APICore {
         $url = $this->server_url . '/core/getaccessdetailsforpath';
         $postdata = 'fullpath=' . $fullpath;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "permission", "PermissionRecord");
+        $collection = new Collection($buffer,  "permission", PermissionRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             $this->stopTimer();
@@ -2807,13 +2806,13 @@ class CloudAPI extends APICore {
         $url = $this->server_url . '/core/getcommentsforitem';
         $postdata = 'fullpath=' . $fullpath;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "comment", "CommentRecord");
+        $collection = new Collection($buffer,  "comment", CommentRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
             return $collection;
         }
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             $this->stopTimer();
@@ -2827,7 +2826,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/checkid";
         $postdata = 'id='.$name;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -2857,7 +2856,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/getdiskusagedetails";
         $postdata = 'username='.$name.'&level='.$level;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "usage", "UsageRecord");
+        $collection = new Collection($buffer,  "usage", UsageRecord::class);
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords();
         return NULL;
@@ -2868,7 +2867,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/getfavoritesinlist";
         $postdata = 'id='.$id;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "entry", "EntryRecord","meta");
+        $collection = new Collection($buffer, "entry", EntryRecord::class,"meta");
         if ($collection->getNumberOfRecords() > 0)
         {
             return $collection;
@@ -2881,7 +2880,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/setuseraccessforshare";
         $postdata = 'shareid='.$shareid.'&userid='.$useremailid.'&'.$accessiblity.'='.$accessvalue;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             return $collection->getRecords ()[0];
@@ -2895,12 +2894,12 @@ class CloudAPI extends APICore {
         $url = $this->server_url . '/core/getversions';
         $postdata = 'filepath=' . $filepath . '&filename=' . $filename;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "version", "VersionRecord","meta");
+        $collection = new Collection($buffer, "version", VersionRecord::class,"meta");
         if ($collection->getNumberOfRecords() > 0)
         {
             return $collection;
         }
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             $this->stopTimer();
@@ -2915,7 +2914,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . '/core/deleteversion';
         $postdata = 'filepath=' . $filepath . '&filename=' . $filename . '&fileid=' . $fileid;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             return $collection->getRecords()[0];
@@ -2928,7 +2927,7 @@ class CloudAPI extends APICore {
     public function deleteAllVersions(){
         $url = $this->server_url . '/core/deleteallversions';
         $buffer = $this->doPOST($url, '');
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             return $collection->getRecords()[0];
@@ -2945,7 +2944,7 @@ class CloudAPI extends APICore {
         $pos = strpos($filedata, '0');
         if($pos == '52')
         {
-            $collection = new Collection($filedata, "command", "CommandRecord");
+            $collection = new Collection($filedata,  "command", CommandRecord::class);
             if ($collection->getNumberOfRecords() > 0)
             {
                 return $collection->getRecords()[0];
@@ -2980,12 +2979,12 @@ class CloudAPI extends APICore {
         $url = $this->server_url . '/core/getactivitystream';
         $postdata = 'parent='.$path;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "activitystreamrecord", "ActivityRecord");
+        $collection = new Collection($buffer,  "activitystreamrecord", ActivityRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             return $collection;
         }
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             return $collection->getRecords()[0];
@@ -3000,7 +2999,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/getalllocks";
         $postdata = 'userid='.$userid;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "lock", "LockRecord", "meta");
+        $collection = new Collection($buffer, "lock", LockRecord::class, "meta");
         $meta = $collection->getMetaRecord();
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
@@ -3021,7 +3020,7 @@ class CloudAPI extends APICore {
         $buffer = $this->doPOST($url, $postdata);
         if($buffer != NULL)
         {
-            $collection = new Collection($buffer, "share", "ShareRecord","meta");
+            $collection = new Collection($buffer, "share", ShareRecord::class,"meta");
             if ($collection->getNumberOfRecords() > 0)
             {
                 return $collection->getRecords()[0];
@@ -3041,7 +3040,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . '/core/updatesharelink';
         $postdata = 'shareid='.$shareid.'&oldsharelink='.$oldsharelink.'&newsharelink='.$newsharelink;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             return $collection->getRecords()[0];
@@ -3077,7 +3076,7 @@ class CloudAPI extends APICore {
         $pos = strpos($buffer, '0');
         if($pos == '55')
         {
-            $collection = new Collection($buffer, "command", "CommandRecord");
+            $collection = new Collection($buffer,  "command", CommandRecord::class);
             if ($collection->getNumberOfRecords() > 0)
             {
                 return $collection->getRecords()[0];
@@ -3164,7 +3163,7 @@ class CloudAPI extends APICore {
         $this->startTimer();
         $url = $this->server_url . "/core/getfavoritesinnamedlist?name=".$name;
         $buffer = $this->doPOST($url, '');
-        $collection = new Collection($buffer, "entry", "EntryRecord");
+        $collection = new Collection($buffer,  "entry", EntryRecord::class);
          if ($collection->getNumberOfRecords() > 0)
         {
             $this->stopTimer();
@@ -3176,7 +3175,7 @@ class CloudAPI extends APICore {
         $this->startTimer();
         $url = $this->server_url . "/core/getsystemstatus";
         $buffer = $this->doPOST($url, '');
-        $collection = new Collection($buffer, "status", "StatusRecord");
+        $collection = new Collection($buffer,  "status", StatusRecord::class);
          if ($collection->getNumberOfRecords() > 0)
         {
             $this->stopTimer();
@@ -3208,7 +3207,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/search";
         $postdata = 'location='.$location.'&keyword='.$keyword.'&minsize='.$minsizeinkb.'&maxsize='.$maxsizeinkb;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "entry", "EntryRecord", "meta");
+        $collection = new Collection($buffer, "entry", EntryRecord::class, "meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -3227,7 +3226,7 @@ class CloudAPI extends APICore {
          $url = $this->server_url . "/core/deletepartialuploads";
          $postdata = 'ignorets=1';
          $buffer = $this->doPOST($url, $postdata);
-         $collection = new Collection($buffer, "command", "CommandRecord");
+         $collection = new Collection($buffer,  "command", CommandRecord::class);
          $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -3254,7 +3253,7 @@ class CloudAPI extends APICore {
          $this->startTimer();
          $url = $this->server_url . "/app/explorer/emptyrecyclebin";
          $buffer = $this->doPOST($url, '');
-         $collection = new Collection($buffer, "command", "CommandRecord");
+         $collection = new Collection($buffer,  "command", CommandRecord::class);
          $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -3270,7 +3269,7 @@ class CloudAPI extends APICore {
          $this->startTimer();
          $url = $this->server_url . "/core/licensecheck";
          $buffer = $this->doPOST($url, '');
-         $collection = new Collection($buffer, "command", "CommandRecord");
+         $collection = new Collection($buffer,  "command", CommandRecord::class);
          $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -3310,7 +3309,7 @@ class CloudAPI extends APICore {
                 '&remote_client_os_type=' . $clientostype . '&remote_client_app_version=' .$clientappversion.
                 '&remote_client_os_version=' . $clientosversion;
         $buffer = $this->doPOSTWithAgent($url, $postdata , $clientostype);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3323,7 +3322,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/ackrmccommands";
         $postdata = 'command_rids=' . $rid .'&remote_client_id=' . $remote_client_id;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3337,7 +3336,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/getgroupaccessforshare";
         $postdata = 'shareid=' . $shareid ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "group", "UserGroupRecord");
+        $collection = new Collection($buffer,  "group", UserGroupRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3352,7 +3351,7 @@ class CloudAPI extends APICore {
         $postdata = 'groupid=' . $groupid . '&shareid=' . $shareid . '&write='  . $write.  '&share='  . $share. 
                 '&sync='  . $sync. '&disallowdelete='  . $disallowdelete;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3366,7 +3365,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/leaveShare";
         $postdata = 'path=' . $path;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3381,7 +3380,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/addaclentry";
         $postdata = 'path=' . $path . '&type=' .$type . '&value=' . $value . '&perm=' . $perm . '&flag=' .$flag;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3396,7 +3395,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/deleteaclentry";
         $postdata = 'path=' . $path . '&type=' .$type . '&value=' . $value;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3411,7 +3410,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/getacl";
         $postdata = 'path=' . $path ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "ace", "AclRecord","meta");
+        $collection = new Collection($buffer, "ace", AclRecord::class,"meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection;
@@ -3426,7 +3425,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/setaclinheritance";
         $postdata = 'path=' . $path . '&inherit=' .$inherit ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3441,7 +3440,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/deleteacl";
         $postdata = 'path=' . $path ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3456,7 +3455,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/geteffectiveacl";
         $postdata = 'path=' . $path . '&emailid=' . $emailid;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "perm", "PermissionRecord", "meta");
+        $collection = new Collection($buffer, "perm", PermissionRecord::class, "meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection;
@@ -3471,7 +3470,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/";
         $postdata = 'op=getrmcclients&userid=' . $username . '&start=' . $start . '&end=' . $end;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "rmc_client", "RMCRecord");
+        $collection = new Collection($buffer,  "rmc_client", RMCRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection;
@@ -3486,7 +3485,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/";
         $postdata = 'op=approvedeviceaccess&remote_client_id=' . $remoteClientId ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3501,7 +3500,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/";
         $postdata = 'op=deletedevice&remote_client_id=' . $remoteClientId ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3516,7 +3515,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/loginprotectedshare";
         $postdata = 'fullquerystring=' . $fullquerystring . '&password=' . $password . '&path=' . $path ;
         $buffer = $this->doPOSTWithHeader($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3530,7 +3529,7 @@ class CloudAPI extends APICore {
         $this->startTimer();
         $url = $this->server_url . "/core/getrandompassword";
         $buffer = $this->doPOST($url, '');
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3545,7 +3544,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/getpublicshareauthinfo";
         $postdata = 'path=' . $path ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3560,7 +3559,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/getsharepassword";
         $postdata = 'shareid=' . $shareid ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3578,7 +3577,7 @@ class CloudAPI extends APICore {
                 '&remote_client_os_type=' . $clientostype . '&remote_client_app_version=' .$clientappversion.
                 '&remote_client_os_version=' . $clientosversion;;
         $buffer = $this->doPOSTWithAgent($url, $postdata, $clientostype);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3596,7 +3595,7 @@ class CloudAPI extends APICore {
                 '&remote_client_os_type=' . $clientostype . '&remote_client_app_version=' .$clientappversion.
                 '&remote_client_os_version=' . $clientosversion;
         $buffer = $this->doPOSTWithAgent($url, $postdata , $clientostype);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3610,7 +3609,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/createprofileoninvite";
         $postdata = 'email=' . $emailid ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3623,7 +3622,7 @@ class CloudAPI extends APICore {
         $this->startTimer();
         $url = $this->server_url . "/core/getshares";
         $buffer = $this->doPOST($url, '');
-        $collection = new Collection($buffer, "share", "ShareRecord");
+        $collection = new Collection($buffer,  "share", ShareRecord::class);
         $this->stopTimer();
        if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3635,7 +3634,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/getuseraccessforshare";
         $postdata = 'shareid=' . $shareid;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "user", "UserAcessForShareRecord");
+        $collection = new Collection($buffer,  "user", UserAcessForShareRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3646,7 +3645,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/getusersforshare";
         $postdata = 'shareid=' . $shareid;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "user", "UsersForShareRecord");
+        $collection = new Collection($buffer,  "user", UsersForShareRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3660,7 +3659,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/getfilelockinfo";
         $postdata = 'path=' . $path;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "filelockinfo", "FileLockInfo");
+        $collection = new Collection($buffer,  "filelockinfo", FileLockInfo::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3672,7 +3671,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/getrssfeed";
         $buffer = $this->doPOST($url,'');
         //var_dump($buffer);
-        $collection = new Collection($buffer, "channel", "RssRecord");
+        $collection = new Collection($buffer,  "channel", RssRecord::class);
         //var_dump($collection);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
@@ -3687,7 +3686,7 @@ class CloudAPI extends APICore {
         $this->startTimer();
         $url = $this->server_url . "/core/searchgroups";
         $buffer = $this->doPOST($url, '');
-        $collection = new Collection($buffer, "group", "GroupRecord", "meta");
+        $collection = new Collection($buffer,  "group", GroupRecord::class, "meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection;
@@ -3701,7 +3700,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/searchprofiles";
         $postdata = 'filter=' . $filter;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "profile", "UserRecord");
+        $collection = new Collection($buffer,  "profile", UserRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection;
@@ -3784,7 +3783,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/getuitranslations?tag=core";
         $buffer = $this->doPOST($url,'');
         $record = gzdecode($buffer);
-        $collection = new Collection($record, "translation", "UITranslationRecord");
+        $collection = new Collection($record,  "translation", UITranslationRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection;
@@ -3795,7 +3794,7 @@ class CloudAPI extends APICore {
         $this->startTimer();
         $url = $this->server_url . "/core/getcustomizationdata";
         $buffer = $this->doGET($url);
-        $collection = new Collection($buffer, "customdata", "CustomizationRecord");
+        $collection = new Collection($buffer,  "customdata", CustomizationRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3838,7 +3837,7 @@ class CloudAPI extends APICore {
         $this->startTimer();
         $url = $this->server_url . "/core/beginprofilecreation";
         $buffer = $this->doPOST($url, '');
-        $collection = new Collection($buffer, "profilecreationrecord", "ProfileRecord");
+        $collection = new Collection($buffer,  "profilecreationrecord", ProfileRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3867,7 +3866,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/splitfilepaths";
         $postdata = 'path='.$path;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "path", "PathRecord");
+        $collection = new Collection($buffer,  "path", PathRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection;
@@ -3885,7 +3884,7 @@ class CloudAPI extends APICore {
         $this->startTimer();
         $url = $this->server_url . "/core/getvideocaps";
         $buffer = $this->doGET($url);
-        $collection = new Collection($buffer, "caps", "VideoCapsRecord");
+        $collection = new Collection($buffer,  "caps", VideoCapsRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -3910,7 +3909,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/";
         $postdata = "op=getemailsubject&param=CUSTOMIZATION_EMAIL_SUBJECT_addusertoshare";
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "setting", "ConfigSettingRecord");
+        $collection = new Collection($buffer,  "setting", ConfigSettingRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4030,7 +4029,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/setconfigitem";
         $postdata = 'key=' . $key.'&name='.$name.'&value='.$value;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4043,7 +4042,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/getconfigitem";
         $postdata = 'key=' . $key.'&name='.$name.'&defaultvalue='.$value;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "configitem", "ConfigItemRecord");
+        $collection = new Collection($buffer,  "configitem", ConfigItemRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4067,7 +4066,7 @@ class CloudAPI extends APICore {
             $postdata .= "&limit=" . $limit;
         }
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "entry", "EntryRecord", "meta");
+        $collection = new Collection($buffer,  "entry", EntryRecord::class, "meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -4102,7 +4101,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=adminlogin&adminuser=' . $adminuser . '&adminpassword=' . $adminpassword;
         $buffer = $this->doPOSTWithHeader($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4122,7 +4121,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=search&keyword=' . $username . '&groupidnin=&externalin=&status=&statusnin=&start=0&end=10&admin=';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "user", "UserRecord", "meta");
+        $collection = new Collection($buffer,  "user", UserRecord::class, "meta");
         $this->stopTimer();
         return $collection;
     }
@@ -4134,7 +4133,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=setadminstatus&profile=' . $profile . '&adminstatus=' . $adminstatus;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4148,7 +4147,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=adduser&username=' . $username . '&email=' . $email . '&password=' . $password . '&authtype=' . $authtype . '&status=' .$status;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4162,7 +4161,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=deleteuser&profile=' . $profile;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4174,7 +4173,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=addgroup&groupname=' . $groupname;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "group", "GroupRecord", "meta");
+        $collection = new Collection($buffer,  "group", GroupRecord::class, "meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
          {
@@ -4195,7 +4194,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=deletegroup&groupid=' . $groupId;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4207,7 +4206,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=addmembertogroup&groupid=' . $groupId . '&userid=' . $userId;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4219,7 +4218,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=deletememberfromgroup&groupid=' . $groupId . '&userid=' . $userId;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4240,7 +4239,7 @@ class CloudAdminAPI extends APICore
             $postdata = 'op=trimauditdb&enddate=' . $enddate;
         }
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4268,7 +4267,7 @@ class CloudAdminAPI extends APICore
         $postdata = 'op=setadminuserpolicy&username=' . $username . '&opname=' . $opname . $create . $read . $update . $delete;
         ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4283,7 +4282,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=clearallalerts';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4299,7 +4298,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=cryptfsactivate&passphrase=' . $passphrase;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4316,7 +4315,7 @@ class CloudAdminAPI extends APICore
            // $passphrase = '&passphrase=' . $passphrase;
         $postdata = 'op=cryptfsinit&passphrase=' . $passphrase . '&addrecoverykey=' . $addrecoverykey;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4331,7 +4330,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=cryptfsencryptall';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4346,7 +4345,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=cryptfsdecryptall';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4371,7 +4370,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=cryptfsstatus';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "encstatus", "EncryptionstatusRecord");
+        $collection = new Collection($buffer,  "encstatus", EncryptionstatusRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4400,7 +4399,7 @@ class CloudAdminAPI extends APICore
         $buffer = $this->doPOST($url, $postdata);
 		//$this->cookie_data = array();
 		$this->xsrf_token = "";
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4414,7 +4413,7 @@ class CloudAdminAPI extends APICore
                 . $automounttype . '&automountparam1=' . $automountparam1 . '&perm=' . $perm  ;
         
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "external", "ExternalRecord");
+        $collection = new Collection($buffer,  "external", ExternalRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -4433,7 +4432,7 @@ class CloudAdminAPI extends APICore
                 . $automounttype . '&automountparam1=' . $automountparam1 . '&perm=' . $perm  ;
         
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "external", "ExternalRecord");
+        $collection = new Collection($buffer,  "external", ExternalRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -4450,7 +4449,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=addusertoexternal&writemode=' . $writemode .'&externalid='. $externalid . '&userid=' . $userid;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4470,7 +4469,7 @@ class CloudAdminAPI extends APICore
             $postdata = 'op=getexternals';
         }
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "external", "ExternalRecord", "meta");
+        $collection = new Collection($buffer,  "external", ExternalRecord::class, "meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection;
@@ -4483,7 +4482,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=addgrouptoexternal&writemode=' . $writemode .'&externalid='. $externalid . '&groupid=' . $groupid;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4496,7 +4495,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getgroupsforexternal&externalid='. $externalid;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "group", "GroupListRecord", "meta");
+        $collection = new Collection($buffer,  "group", GroupListRecord::class, "meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -4514,7 +4513,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getusersforexternal&externalid='. $externalid;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "user", "UserListRecord", "meta");
+        $collection = new Collection($buffer,  "user", UserListRecord::class, "meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -4532,7 +4531,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=deletegroupfromexternal&externalid='. $externalid . '&groupid=' . $groupid;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4545,7 +4544,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=deleteuserfromexternal&externalid='. $externalid . '&userid=' . $username;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4558,7 +4557,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=deleteexternal&externalid='. $externalid;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4572,7 +4571,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=updateuser&profile='. $profilename .'&email='. $emailid . '&status=' . $status;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4585,7 +4584,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=setconfigsetting&count=1&param0=TONIDOCLOUD_ACCOUNT_CREATION_MODE&value0=' . $value;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4598,7 +4597,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=setconfigsetting&count=1&param0=TONIDOCLOUD_ENABLE_2FA&value0=' . $value;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4611,7 +4610,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=setconfigsetting&count=1&param0='.$configconstant.'&value0=' . $value;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4624,7 +4623,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getconfigsetting&count=1&param0='.$configconstant;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "setting", "ConfigSettingRecord");
+        $collection = new Collection($buffer,  "setting", ConfigSettingRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4647,14 +4646,14 @@ class CloudAdminAPI extends APICore
         $pos = strpos($buffer, '0');
         if($pos == '56')
         {
-            $collection = new Collection($buffer, "command", "CommandRecord");
+            $collection = new Collection($buffer,  "command", CommandRecord::class);
             if ($collection->getNumberOfRecords() > 0)
             {
                 return $collection->getRecords()[0];
             }
         }
         
-        $collection = new Collection($buffer, "setting", "ConfigSettingRecord");
+        $collection = new Collection($buffer,  "setting", ConfigSettingRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection;
@@ -4674,7 +4673,7 @@ class CloudAdminAPI extends APICore
             $i++;
         }
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             return $collection->getRecords()[0];
@@ -4688,7 +4687,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=updateuser&profile='. $profilename .'&email='. $emailid . '&backuppathoverride=' . $backuppathoverride;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4708,7 +4707,7 @@ class CloudAdminAPI extends APICore
         }
         //echo $postdata;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4722,7 +4721,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=checkadlogin';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4737,7 +4736,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=checkldaplogin';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4752,7 +4751,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=checkstoragesetting&storagetype=' . $storagetype . '&path=' . $path;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4765,7 +4764,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=checkstoragesetting&storagetype=' . $storagetype .'&server=' . $opserver . '&port=' . $opport . '&account=' . $opaccount . '&user=' . $opuser . '&password=' .$oppassword;;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4779,7 +4778,7 @@ class CloudAdminAPI extends APICore
         $postdata = 'op=checkstoragesetting&storagetype=' . $storagetype . '&key=' . $key .'&secret=' .$secret . '&bucketid=' . 
                 $bucketid . '&noov=' . $noofversion . '&region=' . $region . '&endpoint=' .$endpoint;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4794,7 +4793,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=checkclamav';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4809,7 +4808,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=checksendemail';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer(); 
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4824,7 +4823,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=checksettingpath&path=' . $path ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer(); 
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4839,7 +4838,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getemailid&name=' . $name . '&password=' . $password ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer(); 
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4854,7 +4853,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getemailidforldap&name=' . $name . '&password=' .$password ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer(); 
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4902,7 +4901,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getgroupbyname&groupname=' . $groupName;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "group", "GroupRecord", "meta");
+        $collection = new Collection($buffer,  "group", GroupRecord::class, "meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             {
@@ -4924,7 +4923,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=updategroup&groupname=' . $groupName . '&groupid=' . $groupId;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "group", "GroupRecord", "meta");
+        $collection = new Collection($buffer,  "group", GroupRecord::class, "meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             {
@@ -4967,7 +4966,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=checkadlogin';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "member", "MembersRecord", "meta");
+        $collection = new Collection($buffer,  "member", MembersRecord::class, "meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
            {
@@ -4986,7 +4985,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getadminusers';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "adminuser", "AdminUsersRecord");
+        $collection = new Collection($buffer,  "adminuser", AdminUsersRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
            {
@@ -5005,7 +5004,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getadminuserpolicy&username='.$username;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "operation", "UserOperationsRecord","meta");
+        $collection = new Collection($buffer,  "operation", UserOperationsRecord::class, "meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
            {
@@ -5024,7 +5023,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getadminuseroperationpermission&username='.$username.'&opname='.$opname;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "permission", "PermissionRecord");
+        $collection = new Collection($buffer,  "permission", PermissionRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
            {
@@ -5044,7 +5043,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getadminoperations';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "operation", "UserOperationsRecord","meta");
+        $collection = new Collection($buffer,  "operation", UserOperationsRecord::class, "meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
            {
@@ -5062,7 +5061,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=deleteadminuser&username=' . $username;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -5075,7 +5074,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getadgroupmembers&gmgroup=' . $gmgroup;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "entry", "AdgroupMemberRecord", "meta");
+        $collection = new Collection($buffer,  "entry", AdgroupMemberRecord::class, "meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -5096,7 +5095,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getdoelist';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "doeitem", "DoNotEmailRecord","meta");
+        $collection = new Collection($buffer,  "doeitem", DoNotEmailRecord::class, "meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
            {
@@ -5113,7 +5112,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=clearalldoelist';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -5125,7 +5124,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=removefromdoelist&rid=' . $rid;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -5140,7 +5139,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=setuserpassword&profile=' . $username . '&password=' . $password;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -5154,7 +5153,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=resetpassword&profile=' . $username ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -5168,7 +5167,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getsharesbyowner&shareowner=' . $ownername .'&sharefilter=' .$filter .'&start=0&limit=10';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "share", "ShareRecord", "meta");
+        $collection = new Collection($buffer,  "share", ShareRecord::class, "meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             {
@@ -5187,7 +5186,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getuser&username=' . $username ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "user", "UserRecord");
+        $collection = new Collection($buffer,  "user", UserRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -5201,7 +5200,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getuserusage&username=' . $username ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "usage", "UserUsageRecord");
+        $collection = new Collection($buffer,  "usage", UserUsageRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -5216,7 +5215,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getlatestusersadded';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "user", "UserRecord");
+        $collection = new Collection($buffer,  "user", UserRecord::class);
         $this->stopTimer();  
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -5235,7 +5234,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getlatestfilesadded';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "item", "ItemRecord");
+        $collection = new Collection($buffer,  "item", ItemRecord::class);
         $this->stopTimer();  
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -5274,7 +5273,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getsysalerts';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "alert", "AlertsRecord","meta");
+        $collection = new Collection($buffer,  "alert", AlertsRecord::class, "meta");
         $this->stopTimer();  
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -5293,7 +5292,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=removealert&rid=' . $rid ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -5307,7 +5306,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=superadminaddsite&name=' . $name . '&url=' . $siteurl . '&duplicatesitename=' . $duplicatesitename;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -5321,7 +5320,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=superadmineditsite&name=' . $name . '&url=' . $siteUrl ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -5335,7 +5334,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=superadminremovesite&url=' . $siteurl ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -5349,7 +5348,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=superadminlogin&superadminuser=' . $superadminuser . '&superadminpassword=' . $superadminpassword ;
         $buffer = $this->doPOSTWithHeader($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -5363,7 +5362,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=superadmingetallsites';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "site", "SiteRecord","meta");
+        $collection = new Collection($buffer,  "site", SiteRecord::class, "meta");
         $this->stopTimer();  
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -5382,7 +5381,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=superadminlogout';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -5404,14 +5403,14 @@ class CloudAdminAPI extends APICore
         $pos = strpos($buffer, '0');
         if($pos == '66')
         {
-            $collection = new Collection($buffer, "command", "CommandRecord");
+            $collection = new Collection($buffer,  "command", CommandRecord::class);
             if ($collection->getNumberOfRecords() > 0)
             {
                 return $collection->getRecords()[0];
             }
         }
         
-        $collection = new Collection($buffer, "setting", "ConfigSettingRecord");
+        $collection = new Collection($buffer,  "setting", ConfigSettingRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection;
@@ -5432,7 +5431,7 @@ class CloudAdminAPI extends APICore
         }
         //echo $postdata;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -5447,7 +5446,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=superadminauthstatus';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -5485,7 +5484,7 @@ class CloudAdminAPI extends APICore
             $url .= '&sortdir=' . $sortdir;
         }
         $buffer = $this->doGET($url);
-        $collection = new Collection($buffer, "log", "AuditRecord","meta");
+        $collection = new Collection($buffer,  "log", AuditRecord::class, "meta");
         $this->stopTimer();  
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -5554,7 +5553,7 @@ class CloudAdminAPI extends APICore
                 '&disablemyfilessync=' . $disablemyfilessync . 
                 '&disablenetworksync=' . $disablenetworksync . '&backuppathoverride=' . $backuppathoverride;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -5567,11 +5566,11 @@ class CloudAdminAPI extends APICore
         $postdata = 'op=importadgroup&groupname=' . $groupname . '&groupid=' . $groupid .
                 '&autosync=' . $autosync;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "groupimport", "AdGroupImportRecord");
+        $collection = new Collection($buffer,  "groupimport", AdGroupImportRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             $this->stopTimer();
@@ -5585,7 +5584,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=2falogin&adminuser=' . $adminuser . '&token=' . $token . '&code=' .$code;
         $buffer = $this->doPOSTWithHeader($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             $this->stopTimer();
@@ -5609,7 +5608,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=clearallconfigsetting';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             $this->stopTimer();
@@ -5624,7 +5623,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=emptynetworkfolderrecyclebin&location=' . $location;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -5679,7 +5678,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=removermcclient&remote_client_id=' . $clientid;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -5692,7 +5691,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=addrmccommand&remote_client_id=' . $clientid . '&remote_command_id=' . $commandid . '&message=' .$message;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -5725,7 +5724,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=removermccommand&remote_command_record_id=' . $rid ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -5738,7 +5737,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getversion&force=1' ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "version", "FCVersionRecord");
+        $collection = new Collection($buffer,  "version", FCVersionRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -5751,7 +5750,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/";
         $postdata = 'op=getstats';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "stat", "StatsRecord");
+        $collection = new Collection($buffer,  "stat", StatsRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -5776,7 +5775,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/";
         $postdata = 'op=getauthstatus';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -5791,7 +5790,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/";
         $postdata = 'op=getinfo';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "info", "InfoRecord");
+        $collection = new Collection($buffer,  "info", InfoRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -5806,7 +5805,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/";
         $postdata = 'op=getadminlanguagelist';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "language", "LanguageRecord");
+        $collection = new Collection($buffer,  "language", LanguageRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -5831,7 +5830,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=2fasuperadminlogin&superadminuser=' . $superadminuser . '&token=' . $token . '&code=' .$code;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             $this->stopTimer();
@@ -5864,7 +5863,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/";
         $postdata = 'op=hidegswizard';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -5878,7 +5877,7 @@ class CloudAdminAPI extends APICore
     
         $url = $this->server_url . "/admin/index.php/?op=setconfigsettingxml&param=".$param;
         $buffer = $this->doPOST($url, $data);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             return $collection->getRecords()[0];
@@ -5898,7 +5897,7 @@ class CloudAdminAPI extends APICore
                 $secret . '&enableenc=' . $enableenc . '&kmsid=' .
                 $kmsid ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "external", "ExternalRecordForS3Share");
+        $collection = new Collection($buffer,  "external", ExternalRecordForS3Share::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -5919,7 +5918,7 @@ class CloudAdminAPI extends APICore
                 $conditionid . '&conditionparamjson=' . $conditionparamjson . '&actionid=' . 
                 $actionid .'&actionparamjson=' . $actionparamjson;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             return $collection->getRecords()[0];
@@ -5932,7 +5931,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=removeworkflow&workflowid=' . $workflowid;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             return $collection->getRecords()[0];
@@ -5944,7 +5943,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getworkflows&start=' . $start . '&limit=' . $end;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "workflow", "GetWorkFlowRecords", "meta");
+        $collection = new Collection($buffer,  "workflow", GetWorkFlowRecords::class, "meta");
         if ($collection->getNumberOfRecords() > 0)
         {
             return $collection;
@@ -5963,7 +5962,7 @@ class CloudAdminAPI extends APICore
                 $conditionid . '&conditionparamjson=' . $conditionparamjson . '&actionid=' . 
                 $actionid .'&actionparamjson=' . $actionparamjson;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             return $collection->getRecords()[0];
@@ -5976,7 +5975,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getconditions';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "condition", "WorkFlowConditionRecords");
+        $collection = new Collection($buffer,  "condition", WorkFlowConditionRecords::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             return $collection;
@@ -5992,7 +5991,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getactions&forcondition=' . $forcondition;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "action", "WorkFlowConditionRecords");
+        $collection = new Collection($buffer,  "action", WorkFlowConditionRecords::class);
         if ($collection->getNumberOfRecords() > 0)
         {
             return $collection;
@@ -6012,7 +6011,7 @@ class CloudAdminAPI extends APICore
 //        $pos = strpos($buffer, '0');
 //        if($pos == '56')
 //        {
-//            $collection = new Collection($buffer, "command", "CommandRecord");
+//            $collection = new Collection($buffer,  "command", CommandRecord::class);
 //            if ($collection->getNumberOfRecords() > 0)
 //            {
 //                return $collection->getRecords()[0];
@@ -6020,7 +6019,7 @@ class CloudAdminAPI extends APICore
 //        }
 //        else
 //        {
-          $collection = new Collection($buffer, "policy", "PolicyForUserRecord");
+          $collection = new Collection($buffer,  "policy", PolicyForUserRecord::class);
             if ($collection->getNumberOfRecords() > 0)
             {
                 return $collection;
@@ -6037,7 +6036,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=updatepolicyforuser&username=' . $username . '&' . $policy . '=' . $value;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
          {
             return $collection->getRecords()[0];
@@ -6050,7 +6049,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getgroupsforuser&username=' . $username . 'start=0&end=10';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "group", "GroupRecord" , "meta");
+        $collection = new Collection($buffer, "group", GroupRecord::class , "meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -6069,7 +6068,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=setchecklist&param=' . $param . '&xmlstr=' . $value;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
          {
             return $collection->getRecords()[0];
@@ -6083,7 +6082,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getchecklist';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "items", "CheckListRecord", 'meta');
+        $collection = new Collection($buffer, "items", CheckListRecord::class, 'meta');
         if ($collection->getNumberOfRecords() > 0)
          {
             return $collection;
@@ -6105,7 +6104,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getavailablereportqueries';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "querytemplate", "QueriesRecord");
+        $collection = new Collection($buffer,  "querytemplate", QueriesRecord::class);
         if ($collection->getNumberOfRecords() > 0)
          {
             return $collection;
@@ -6120,7 +6119,7 @@ class CloudAdminAPI extends APICore
         $postdata = 'op=addreport&reportname=' . $reportname . '&reportqueryid=' .
                 $reportqueryid . '&reportqueryparamjson=' . $reportqueryparamjson;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
          {
             return $collection->getRecords()[0];
@@ -6134,7 +6133,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getreports&start=0&limit=10';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "savedreport", "ReportsRecord","meta");
+        $collection = new Collection($buffer, "savedreport", ReportsRecord::class,"meta");
         if ($collection->getNumberOfRecords() > 0)
         {
             return $collection;
@@ -6152,7 +6151,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=removereport&reportid=' . $reportid;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
          {
             return $collection->getRecords()[0];
@@ -6168,7 +6167,7 @@ class CloudAdminAPI extends APICore
                 $reportqueryid . '&reportname=' . $reportname .
                 '&reportqueryparamjson=' . $reportqueryparamjson;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
          {
             return $collection->getRecords()[0];
@@ -6180,7 +6179,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=checkserverurl&urlpath=' . $urlpath;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
             {
             return $collection->getRecords()[0];
@@ -6193,7 +6192,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=setteamfolderuser&username=' . $username;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
             {
             return $collection->getRecords()[0];
@@ -6206,7 +6205,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getteamfolderproperties';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "teamfolderproperty", "TeamfolderpropertiesRecord");
+        $collection = new Collection($buffer,  "teamfolderproperty", TeamfolderpropertiesRecord::class);
         if ($collection->getNumberOfRecords() > 0)
             {
             return $collection->getRecords()[0];
@@ -6221,7 +6220,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getallpolicies&start=0&limit=10&policynamefilter='.$policy_name_filter;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "policy", "PolicyRecord");
+        $collection = new Collection($buffer,  "policy", PolicyRecord::class);
         if ($collection->getNumberOfRecords() > 0)
             {
             return $collection;
@@ -6241,7 +6240,7 @@ class CloudAdminAPI extends APICore
         //echo $postdata;
         $buffer = $this->doPOST($url, $postdata);
         
-        $collection = new Collection($buffer, "command", "CommandRecord");
+        $collection = new Collection($buffer,  "command", CommandRecord::class);
         if ($collection->getNumberOfRecords() > 0)
             {
             return $collection->getRecords()[0];
@@ -6256,7 +6255,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=geteffectivepolicyforuser&username='.$username;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "policy", "PolicyRecord");
+        $collection = new Collection($buffer,  "policy", PolicyRecord::class);
         if ($collection->getNumberOfRecords() > 0)
             {
             return $collection;
