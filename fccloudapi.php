@@ -3777,6 +3777,38 @@ class CloudAPI extends APICore {
         $buffer = $this->doPOST($url, '');
         return $buffer;
     }
+
+    /**
+     * Retrieve available metadata sets
+     *
+     * @param array $data
+     * @return mixed|boolean
+     */
+    public function getAvailableMetadataSets(array $data)
+    {
+        $this->startTimer();
+        $response = $this->doPOST("{$this->server_url}/core/getavailablemetadatasets", $data);
+        $this->stopTimer();
+
+        return $response;
+    }
+
+    /**
+     * Retrieve metadata attribute values attached to the specified file object
+     *
+     * @param string $fullPath
+     * @return mixed|boolean
+     */
+    public function getMetadataValues(string $fullPath)
+    {
+        $this->startTimer();
+        $response = $this->doPOST("{$this->server_url}/core/getmetadatavalues", [
+            'fullpath' => $fullPath
+        ]);
+        $this->stopTimer();
+
+        return $response;
+    }
     
     public function getUITranslations() {
         $this->startTimer();
@@ -4976,7 +5008,49 @@ class CloudAdminAPI extends APICore
             {
             return NULL;
             }   
-        }    
+        }
+
+    /**
+     * Requires admin login
+     *
+     * @param array $data
+     */
+    public function updateMetadataSet(array $data)
+    {
+        $this->startTimer();
+        $response = $this->doPOST("{$this->server_url}/admin/updatemetadataset", $data);
+        $this->stopTimer();
+
+        return $response;
+    }
+
+    /**
+     * Requires admin login
+     *
+     * @param array $data
+     */
+    public function addMetadataSet(array $data)
+    {
+        $this->startTimer();
+        $response = $this->doPOST("{$this->server_url}/admin/addmetadataset", $data);
+        $this->stopTimer();
+
+        return $response;
+    }
+
+    /**
+     * Requires admin login
+     *
+     * @param array $data
+     */
+    public function getMetadataSetDefinitions(array $data)
+    {
+        $this->startTimer();
+        $response = $this->doPOST("{$this->server_url}/admin/getmetadatasetdefinitions", $data);
+        $this->stopTimer();
+
+        return $response;
+    }
         
     //API to get admin users 
     //RETURNS AdminUsersRecord
