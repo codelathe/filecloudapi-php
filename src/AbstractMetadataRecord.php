@@ -32,7 +32,7 @@ abstract class AbstractMetadataRecord extends DataRecord
             case self::TYPE_DECIMAL:
                 return (float) $data;
             case self::TYPE_BOOLEAN:
-                return (bool) $data;
+                return !!json_decode($data);
             case self::TYPE_DATE:
                 return \DateTime::createFromFormat('Y-m-d H:i:s', $data);
             case self::TYPE_ARRAY:
