@@ -7,23 +7,13 @@
 
 namespace CodeLathe\FileCloudApi;
 
-use codelathe\fccloudapi\DataRecord;
-
 /**
  * Class MetadataSetRecord
  *
  * @package codelathe\fccloudapi
  */
-class MetadataSetRecord extends DataRecord
+final class MetadataSetRecord extends AbstractMetadataRecord
 {
-    const TYPE_TEXT = 1;
-    const TYPE_INTEGER = 2;
-    const TYPE_DECIMAL = 3;
-    const TYPE_BOOLEAN = 4;
-    const TYPE_DATE = 5;
-    const TYPE_ENUMERATION = 6;
-    const TYPE_ARRAY = 7;
-
     private $id;
     private $name;
     private $description;
@@ -153,15 +143,15 @@ class MetadataSetRecord extends DataRecord
     private function castToType($data, int $type)
     {
         switch ($type) {
-            case 2:
+            case self::TYPE_INTEGER:
                 return (int) $data;
-            case 3:
+            case self::TYPE_DECIMAL:
                 return (float) $data;
-            case 4:
+            case self::TYPE_BOOLEAN:
                 return (bool) $data;
-            case 5:
+            case self::TYPE_DATE:
                 return \DateTime::createFromFormat('Y-m-d H:i:s', $data);
-            case 7:
+            case self::TYPE_ARRAY:
                 return explode(',', $data);
             default:
                 return $data;
