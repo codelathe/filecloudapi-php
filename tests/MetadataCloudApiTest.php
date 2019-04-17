@@ -36,13 +36,13 @@ class MetadataCloudApiTest extends TestCase
         /** @var MetadataSetRecord $record */
         foreach ($metadataSets->getRecords() as $i => $record) {
             $this->assertInstanceOf(MetadataSetRecord::class, $record);
-            $this->assertEquals('5cb73b04adccf621f8014968', $record->getId());
-            $this->assertEquals('Readable', $record->getName());
-            $this->assertEquals('Readable files metadataset', $record->getDescription());
-            $this->assertEquals(false, $record->getDisabled());
-            $this->assertEquals(1, $record->getRead());
-            $this->assertEquals(1, $record->getWrite());
-            $this->assertEquals(7, $record->getAttributesTotal());
+            $this->assertSame('5cb73b04adccf621f8014968', $record->getId());
+            $this->assertSame('Readable', $record->getName());
+            $this->assertSame('Readable files metadataset', $record->getDescription());
+            $this->assertSame(false, $record->getDisabled());
+            $this->assertSame(true, $record->getRead());
+            $this->assertSame(true, $record->getWrite());
+            $this->assertSame(7, $record->getAttributesTotal());
             $this->assertIsArray($record->getAttributes());
 
             $expectedAttributes = $expectedAttributesSet[$i];
@@ -90,7 +90,7 @@ class MetadataCloudApiTest extends TestCase
                     'name' => 'English',
                     'description' => '',
                     'type' => 4,
-                    'defaultvalue' => true,
+                    'defaultvalue' => false,
                     'required' => false,
                     'disabled' => false,
                 ],
@@ -169,7 +169,7 @@ class MetadataCloudApiTest extends TestCase
         <attribute3_name>English</attribute3_name>
         <attribute3_description></attribute3_description>
         <attribute3_type>4</attribute3_type>
-        <attribute3_defaultvalue>true</attribute3_defaultvalue>
+        <attribute3_defaultvalue>false</attribute3_defaultvalue>
         <attribute3_required></attribute3_required>
         <attribute3_disabled></attribute3_disabled>
         <attribute4_attributeid>5cb73b04adccf621f8014965</attribute4_attributeid>
