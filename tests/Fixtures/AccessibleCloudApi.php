@@ -5,7 +5,7 @@
  * This file is part of FileCloud  http://www.getfilecloud.com
  *******************************************************************************/
 
-namespace FileCloud\Tests\Fixtures;
+namespace CodeLathe\FileCloudApi\Tests\Fixtures;
 
 use codelathe\fccloudapi\CloudAPI;
 

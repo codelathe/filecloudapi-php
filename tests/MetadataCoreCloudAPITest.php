@@ -5,11 +5,11 @@
  * This file is part of FileCloud  http://www.getfilecloud.com
  *******************************************************************************/
 
-namespace FileCloud\Tests;
+namespace CodeLathe\FileCloudApi\Tests;
 
 use codelathe\fccloudapi\CloudAPI;
-use codelathe\fccloudapi\MetadataSetRecord;
-use FileCloud\Tests\Fixtures\AccessibleCloudApi;
+use CodeLathe\FileCloudApi\MetadataSetRecord;
+use CodeLathe\FileCloudApi\Tests\Fixtures\AccessibleCloudApi;
 use PHPUnit\Framework\TestCase;
 
 class MetadataCoreCloudAPITest extends TestCase

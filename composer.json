@@ -7,12 +7,13 @@
       "php": "^7.1"
     },
     "autoload": {
+        "psr-4": { "CodeLathe\\FileCloudApi\\": "src/" },
         "files": [
             "fccloudapi.php"
         ]
     },
     "autoload-dev": {
-        "psr-4": { "FileCloud\\Tests\\": "tests/" }
+        "psr-4": { "CodeLathe\\FileCloudApi\\Tests\\": "tests/" }
     },
     "require-dev": {
         "phpunit/phpunit": "^7.5.8"
