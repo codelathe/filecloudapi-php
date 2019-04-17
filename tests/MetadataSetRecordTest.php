@@ -30,7 +30,14 @@ class MetadataSetRecordTest extends TestCase
 
         /** @var array $attribute */
         foreach ($record->getAttributes() as $j => $attribute) {
-            $this->assertEquals($expectedAttributes[$j], $attribute);
+            foreach ($attribute as $k => $element) {
+                if (is_object($element)) {
+                    // DateTime
+                    $this->assertEquals($expectedAttributes[$j][$k], $element);
+                } else {
+                    $this->assertSame($expectedAttributes[$j][$k], $element);
+                }
+            }
         }
     }
     
