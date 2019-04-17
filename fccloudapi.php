@@ -128,14 +128,12 @@ class Collection {
         */
     }
 
-    public function getNumberOfRecords() {
-        if ($this->m_success == true) {
-            return count($this->m_records);
-        }
-        
-        // TODO: remove
-        echo $buffer;//return 0;
-        
+    /**
+     * @return int
+     */
+    public function getNumberOfRecords(): int
+    {
+        return $this->m_success == true ? count($this->m_records) : 0;
     }
 
     public function getRecords() {
