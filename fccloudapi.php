@@ -72,6 +72,7 @@
 namespace codelathe\fccloudapi;
 
 use CodeLathe\FileCloudApi\MetadataSetRecord;
+use CodeLathe\FileCloudApi\MetadataValueRecord;
 
 class Collection {
 
@@ -3808,9 +3809,10 @@ class CloudAPI extends APICore {
         $response = $this->doPOST("{$this->server_url}/core/getmetadatavalues", [
             'fullpath' => $fullPath
         ]);
+        $collection = new Collection($response,  'metadatasetvalue', MetadataValueRecord::class);
         $this->stopTimer();
-
-        return $response;
+        
+        return $collection;
     }
     
     public function getUITranslations() {
