@@ -9,6 +9,12 @@ namespace CodeLathe\FileCloudApi\Tests\Fixtures;
 
 use codelathe\fccloudapi\CloudAPI;
 
+/**
+ * Class AccessibleCloudApi. Test version of CloudAPI with private properties
+ * and methods exposed for easy stubbing.
+ * 
+ * @package CodeLathe\FileCloudApi\Tests\Fixtures
+ */
 class AccessibleCloudApi extends CloudAPI
 {
     /**
