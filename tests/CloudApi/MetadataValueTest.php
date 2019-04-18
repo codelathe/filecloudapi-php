@@ -27,6 +27,8 @@ class MetadataValueTest extends TestCase
 
         /** @var CloudAPI $cloudApiMock */
         $metadataSets = $cloudApiMock->getMetadataValues('/tester/textfile1.txt');
+        
+        $this->assertEquals(3, $metadataSets->getNumberOfRecords());
         foreach ($metadataSets->getRecords() as $i => $record) {
             $this->assertInstanceOf(MetadataValueRecord::class, $record);
         }
