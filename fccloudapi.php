@@ -3784,13 +3784,15 @@ class CloudAPI extends APICore {
     /**
      * Retrieve available metadata sets
      *
-     * @param array $data
+     * @param string $fullPath
      * @return Collection
      */
-    public function getAvailableMetadataSets(array $data): Collection
+    public function getAvailableMetadataSets(string $fullPath): Collection
     {
         $this->startTimer();
-        $response = $this->doPOST("{$this->server_url}/core/getavailablemetadatasets", $data);
+        $response = $this->doPOST("{$this->server_url}/core/getavailablemetadatasets", [
+            'fullpath' => $fullPath
+        ]);
         $collection = new Collection($response,  "metadataset", MetadataSetRecord::class);
         $this->stopTimer();
         
