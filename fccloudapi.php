@@ -4866,7 +4866,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getlicense';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, 'license', 'LicenseRecord');
+        $collection = new Collection($buffer, 'license', LicenseRecord::class);
         $this->stopTimer(); 
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -4882,7 +4882,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getadgroups';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "entry", "AdgroupRecord" , "meta");
+        $collection = new Collection($buffer, "entry", AdgroupRecord::class, "meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -4946,7 +4946,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getgroups';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "group", "GroupRecord" , "meta");
+        $collection = new Collection($buffer, "group", GroupRecord::class , "meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -5659,7 +5659,7 @@ class CloudAdminAPI extends APICore
             $postdata = 'op=getrmcclients&start=0&end=10';
         }
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "rmc_client", "RMCRecord" , "meta");
+        $collection = new Collection($buffer, "rmc_client", RMCRecord::class, "meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -5705,7 +5705,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getrmccommands&remote_client_id=' . $clientid ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "rmc_command", "RMCCommandRecord" );
+        $collection = new Collection($buffer, "rmc_command", RMCCommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
