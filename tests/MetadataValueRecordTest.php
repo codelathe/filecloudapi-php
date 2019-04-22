@@ -22,7 +22,7 @@ class MetadataValueRecordTest extends TestCase
         $this->assertSame(3, $record->getSetType());
         $this->assertSame(true, $record->isRead());
         $this->assertSame(true, $record->isWrite());
-        $this->assertSame(7, $record->getAttributesTotal());
+        $this->assertSame(count($record->getAttributes()), $record->getAttributesTotal());
         $this->assertIsArray($record->getAttributes());
 
         $expectedAttributes = $this->getExpectedAttributes();

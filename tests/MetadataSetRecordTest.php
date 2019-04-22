@@ -23,7 +23,7 @@ class MetadataSetRecordTest extends TestCase
         $this->assertSame(false, $record->getDisabled());
         $this->assertSame(true, $record->getRead());
         $this->assertSame(true, $record->getWrite());
-        $this->assertSame(7, $record->getAttributesTotal());
+        $this->assertSame(count($record->getAttributes()), $record->getAttributesTotal());
         $this->assertIsArray($record->getAttributes());
 
         $expectedAttributes = $this->getExpectedAttributesSet()[0];

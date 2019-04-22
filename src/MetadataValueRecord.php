@@ -146,8 +146,7 @@ class MetadataValueRecord extends AbstractMetadataRecord
         foreach ($record as $key => $elem) {
             if ($key === 'attributes_total') {
                 $this->attributesTotal = $elem;
-                // TODO: replace with continue
-                break;
+                continue;
             }
 
             if (substr($key, 0, 9) !== 'attribute') {
