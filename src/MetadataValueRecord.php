@@ -6,7 +6,7 @@ namespace CodeLathe\FileCloudApi;
  * Class MetadataValueRecord
  * @package CodeLathe\FileCloudApi
  */
-class MetadataValueRecord extends AbstractMetadataRecord
+final class MetadataValueRecord extends AbstractMetadataRecord
 {
     /**
      * @var string

@@ -5,7 +5,7 @@ namespace FileCloud\Tests;
 use CodeLathe\FileCloudApi\MetadataSetRecord;
 use PHPUnit\Framework\TestCase;
 
-class MetadataSetRecordTest extends TestCase
+final class MetadataSetRecordTest extends TestCase
 {
     public function testInitialValuesAreSet()
     {

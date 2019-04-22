@@ -7,7 +7,7 @@ use CodeLathe\FileCloudApi\MetadataValueRecord;
 use CodeLathe\FileCloudApi\Tests\Fixtures\AccessibleCloudApi;
 use PHPUnit\Framework\TestCase;
 
-class MetadataValueTest extends TestCase
+final class MetadataValueTest extends TestCase
 {
     public function testCanGetMetadataValues()
     {

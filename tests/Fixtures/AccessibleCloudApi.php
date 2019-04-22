@@ -10,7 +10,7 @@ use codelathe\fccloudapi\CloudAPI;
  * 
  * @package CodeLathe\FileCloudApi\Tests\Fixtures
  */
-class AccessibleCloudApi extends CloudAPI
+final class AccessibleCloudApi extends CloudAPI
 {
     /**
      * {@inheritdoc}

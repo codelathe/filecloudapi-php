@@ -7,7 +7,7 @@ use CodeLathe\FileCloudApi\MetadataSetRecord;
 use CodeLathe\FileCloudApi\Tests\Fixtures\AccessibleCloudApi;
 use PHPUnit\Framework\TestCase;
 
-class AvailableMetadataSetTest extends TestCase
+final class AvailableMetadataSetTest extends TestCase
 {
     public function testCanGetAvailableMetadataSets()
     {
