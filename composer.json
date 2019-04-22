@@ -5,7 +5,8 @@
     "license": "Apache-2.0",
     "require": {
         "php": "^7.1",
-        "ext-json": "*"
+        "ext-json": "*",
+        "ext-curl": "*"
     },
     "autoload": {
         "psr-4": { "CodeLathe\\FileCloudApi\\": "src/" },

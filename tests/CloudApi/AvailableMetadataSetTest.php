@@ -19,7 +19,10 @@ final class AvailableMetadataSetTest extends TestCase
 
         $mockApiResponse = $this->getSampleResponse();
 
-        $cloudApiMock->method('doPost')
+        $cloudApiMock
+            ->expects($this->any())
+            ->method('doPost')
+            ->with("$serverUrl/core/getavailablemetadatasets", http_build_query(['fullpath' => '/tester/textfile1.txt']))
             ->willReturn($mockApiResponse);
 
         /** @var CloudAPI $cloudApiMock */

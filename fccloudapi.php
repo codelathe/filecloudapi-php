@@ -1679,11 +1679,11 @@ class APICore {
     //public $cookie_data;
 
     public function __construct($SERVER_URL) {
+        $this->server_url = $SERVER_URL;
         $this->init($SERVER_URL);
     }
 
     public function init($SERVER_URL) {
-        $this->server_url = $SERVER_URL;
         $this->curl_handle = curl_init();
         curl_setopt($this->curl_handle, CURLOPT_COOKIEJAR, dirname(__FILE__) . DIRECTORY_SEPARATOR . "cookie.txt");
         curl_setopt($this->curl_handle, CURLOPT_COOKIEFILE, dirname(__FILE__) . DIRECTORY_SEPARATOR . "cookie.txt");
@@ -3790,9 +3790,9 @@ class CloudAPI extends APICore {
     public function getAvailableMetadataSets(string $fullPath): Collection
     {
         $this->startTimer();
-        $response = $this->doPOST("{$this->server_url}/core/getavailablemetadatasets", [
+        $response = $this->doPOST("{$this->server_url}/core/getavailablemetadatasets", http_build_query([
             'fullpath' => $fullPath
-        ]);
+        ]));
         $collection = new Collection($response,  "metadataset", MetadataSetRecord::class);
         $this->stopTimer();
         
@@ -3808,9 +3808,9 @@ class CloudAPI extends APICore {
     public function getMetadataValues(string $fullPath)
     {
         $this->startTimer();
-        $response = $this->doPOST("{$this->server_url}/core/getmetadatavalues", [
+        $response = $this->doPOST("{$this->server_url}/core/getmetadatavalues", http_build_query([
             'fullpath' => $fullPath
-        ]);
+        ]));
         $collection = new Collection($response,  'metadatasetvalue', MetadataValueRecord::class);
         $this->stopTimer();
         
@@ -5016,48 +5016,6 @@ class CloudAdminAPI extends APICore
             return NULL;
             }   
         }
-
-    /**
-     * Requires admin login
-     *
-     * @param array $data
-     */
-    public function updateMetadataSet(array $data)
-    {
-        $this->startTimer();
-        $response = $this->doPOST("{$this->server_url}/admin/updatemetadataset", $data);
-        $this->stopTimer();
-
-        return $response;
-    }
-
-    /**
-     * Requires admin login
-     *
-     * @param array $data
-     */
-    public function addMetadataSet(array $data)
-    {
-        $this->startTimer();
-        $response = $this->doPOST("{$this->server_url}/admin/addmetadataset", $data);
-        $this->stopTimer();
-
-        return $response;
-    }
-
-    /**
-     * Requires admin login
-     *
-     * @param array $data
-     */
-    public function getMetadataSetDefinitions(array $data)
-    {
-        $this->startTimer();
-        $response = $this->doPOST("{$this->server_url}/admin/getmetadatasetdefinitions", $data);
-        $this->stopTimer();
-
-        return $response;
-    }
         
     //API to get admin users 
     //RETURNS AdminUsersRecord
