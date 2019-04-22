@@ -5016,48 +5016,6 @@ class CloudAdminAPI extends APICore
             return NULL;
             }   
         }
-
-    /**
-     * Requires admin login
-     *
-     * @param array $data
-     */
-    public function updateMetadataSet(array $data)
-    {
-        $this->startTimer();
-        $response = $this->doPOST("{$this->server_url}/admin/updatemetadataset", $data);
-        $this->stopTimer();
-
-        return $response;
-    }
-
-    /**
-     * Requires admin login
-     *
-     * @param array $data
-     */
-    public function addMetadataSet(array $data)
-    {
-        $this->startTimer();
-        $response = $this->doPOST("{$this->server_url}/admin/addmetadataset", $data);
-        $this->stopTimer();
-
-        return $response;
-    }
-
-    /**
-     * Requires admin login
-     *
-     * @param array $data
-     */
-    public function getMetadataSetDefinitions(array $data)
-    {
-        $this->startTimer();
-        $response = $this->doPOST("{$this->server_url}/admin/getmetadatasetdefinitions", $data);
-        $this->stopTimer();
-
-        return $response;
-    }
         
     //API to get admin users 
     //RETURNS AdminUsersRecord
