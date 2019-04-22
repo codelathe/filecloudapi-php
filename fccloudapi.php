@@ -71,6 +71,9 @@
  */
 namespace codelathe\fccloudapi;
 
+use CodeLathe\FileCloudApi\MetadataSetRecord;
+use CodeLathe\FileCloudApi\MetadataValueRecord;
+
 class Collection {
 
     private $m_records;
@@ -128,12 +131,12 @@ class Collection {
         */
     }
 
-    public function getNumberOfRecords() {
-        if ($this->m_success == true) {
-            return count($this->m_records);
-        }
-        echo $buffer;//return 0;
-        
+    /**
+     * @return int
+     */
+    public function getNumberOfRecords(): int
+    {
+        return $this->m_success == true ? count($this->m_records) : 0;
     }
 
     public function getRecords() {
@@ -3781,16 +3784,19 @@ class CloudAPI extends APICore {
     /**
      * Retrieve available metadata sets
      *
-     * @param array $data
-     * @return mixed|boolean
+     * @param string $fullPath
+     * @return Collection
      */
-    public function getAvailableMetadataSets(array $data)
+    public function getAvailableMetadataSets(string $fullPath): Collection
     {
         $this->startTimer();
-        $response = $this->doPOST("{$this->server_url}/core/getavailablemetadatasets", $data);
+        $response = $this->doPOST("{$this->server_url}/core/getavailablemetadatasets", [
+            'fullpath' => $fullPath
+        ]);
+        $collection = new Collection($response,  "metadataset", MetadataSetRecord::class);
         $this->stopTimer();
-
-        return $response;
+        
+        return $collection;
     }
 
     /**
@@ -3805,9 +3811,10 @@ class CloudAPI extends APICore {
         $response = $this->doPOST("{$this->server_url}/core/getmetadatavalues", [
             'fullpath' => $fullPath
         ]);
+        $collection = new Collection($response,  'metadatasetvalue', MetadataValueRecord::class);
         $this->stopTimer();
-
-        return $response;
+        
+        return $collection;
     }
     
     public function getUITranslations() {
