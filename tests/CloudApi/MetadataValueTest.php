@@ -17,12 +17,16 @@ final class MetadataValueTest extends TestCase
             ->setMethods(['init', '__destruct', 'doPost'])
             ->getMock();
 
-        $cloudApiMock->method('doPost')
-             ->willReturn($this->getSampleResponse());
+        $cloudApiMock
+            ->expects($this->any())
+            ->method('doPost')
+            ->with("$serverUrl/core/getmetadatavalues", http_build_query(['fullpath' => '/tester/textfile1.txt']))
+            ->willReturn($this->getSampleResponse())
+        ;
 
         /** @var CloudAPI $cloudApiMock */
         $metadataSets = $cloudApiMock->getMetadataValues('/tester/textfile1.txt');
-        
+
         $this->assertEquals(3, $metadataSets->getNumberOfRecords());
         foreach ($metadataSets->getRecords() as $i => $record) {
             $this->assertInstanceOf(MetadataValueRecord::class, $record);
