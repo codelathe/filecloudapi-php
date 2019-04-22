@@ -1679,11 +1679,11 @@ class APICore {
     //public $cookie_data;
 
     public function __construct($SERVER_URL) {
+        $this->server_url = $SERVER_URL;
         $this->init($SERVER_URL);
     }
 
     public function init($SERVER_URL) {
-        $this->server_url = $SERVER_URL;
         $this->curl_handle = curl_init();
         curl_setopt($this->curl_handle, CURLOPT_COOKIEJAR, dirname(__FILE__) . DIRECTORY_SEPARATOR . "cookie.txt");
         curl_setopt($this->curl_handle, CURLOPT_COOKIEFILE, dirname(__FILE__) . DIRECTORY_SEPARATOR . "cookie.txt");
