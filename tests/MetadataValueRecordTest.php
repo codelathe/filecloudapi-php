@@ -1,10 +1,5 @@
 <?php
 
-/*******************************************************************************
- * Copyright (c) 2019 CodeLathe LLC. All rights Reserved.
- * This file is part of FileCloud  http://www.getfilecloud.com
- *******************************************************************************/
-
 namespace CodeLathe\FileCloudApi\Tests;
 
 use CodeLathe\FileCloudApi\MetadataValueRecord;
