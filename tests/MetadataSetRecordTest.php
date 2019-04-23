@@ -2,7 +2,7 @@
 
 namespace FileCloud\Tests;
 
-use CodeLathe\FileCloudApi\MetadataSetRecord;
+use codelathe\fccloudapi\MetadataSetRecord;
 use PHPUnit\Framework\TestCase;
 
 final class MetadataSetRecordTest extends TestCase

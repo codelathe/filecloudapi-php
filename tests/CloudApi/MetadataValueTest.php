@@ -3,7 +3,7 @@
 namespace CodeLathe\FileCloudApi\Tests\CloudApi;
 
 use codelathe\fccloudapi\CloudAPI;
-use CodeLathe\FileCloudApi\MetadataValueRecord;
+use codelathe\fccloudapi\MetadataValueRecord;
 use CodeLathe\FileCloudApi\Tests\Fixtures\AccessibleCloudApi;
 use PHPUnit\Framework\TestCase;
 
