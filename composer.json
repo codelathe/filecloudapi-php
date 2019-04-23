@@ -9,7 +9,6 @@
         "ext-curl": "*"
     },
     "autoload": {
-        "psr-4": { "CodeLathe\\FileCloudApi\\": "src/" },
         "files": [
             "fccloudapi.php"
         ]
