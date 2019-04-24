@@ -4588,6 +4588,93 @@ class CloudAdminAPI extends APICore
     }
 
     /**
+     * @param array $data
+     * @return CommandRecord
+     */
+    public function updateMetadataSet(
+        string $id,
+        string $name,
+        string $description,
+        bool $disabled,
+        bool $allowAllPaths,
+        int $type,
+        array $attributes,
+        array $users,
+        array $groups,
+        array $paths
+    ): ?CommandRecord {
+        $this->startTimer();
+        
+        // basic fields
+        $data = [
+            'id' => $id,
+            'name' => $name,
+            'description' => $description,
+            'disabled' => json_encode($disabled),
+            'allowallpaths' => json_encode($allowAllPaths),
+            'type' => $type
+        ];
+        
+        // attributes
+        $nonStringFields = ['type', 'required', 'disabled'];
+        foreach ($attributes as $i => $attribute) {
+            foreach ($attribute as $fieldName => $fieldValue) {
+                $transformedFieldValue = $fieldValue;
+                if (in_array($fieldName, $nonStringFields)) {
+                    $transformedFieldValue = json_encode($fieldValue);
+                }
+                
+                if ($fieldName === 'defaultvalue') {
+                    switch ($data["attribute{$i}_type"]) {
+                        case 5:
+                            $transformedFieldValue = $fieldValue instanceof \DateTime ? $fieldValue->format('Y-m-d H:i:s') : $fieldValue;
+                            break;
+                        case 2:
+                        case 3:
+                        case 4:
+                            $transformedFieldValue = json_encode($fieldValue);
+                            break;
+                    }
+                }
+                
+                $data["attribute{$i}_{$fieldName}"] = $transformedFieldValue;
+            }
+        }
+        $data['attributes_total'] = count($attributes);
+
+        // allowed users
+        foreach ($users as $i => $user) {
+            $data["user{$i}_name"] = $user['name'];
+            $data["user{$i}_read"] = json_encode($user['read']);
+            $data["user{$i}_write"] = json_encode($user['write']);
+        }
+        $data['users_total'] = count($users);
+
+        // allowed groups
+        foreach ($groups as $i => $group) {
+            $data["group{$i}_id"] = $group['id'];
+            $data["group{$i}_name"] = $group['name'];
+            $data["group{$i}_read"] = json_encode($group['read']);
+            $data["group{$i}_write"] = json_encode($group['write']);
+        }
+        $data['groups_total'] = count($groups);
+
+        // allowed paths
+        foreach ($paths as $i => $path) {
+            $data["path{$i}"] = $path;
+        }
+        $data['paths_total'] = count($paths);
+
+        $response = $this->doPOST("{$this->server_url}/admin/updatemetadataset", http_build_query($data));
+        $collection = new Collection($response,  "command", CommandRecord::class);
+        $records = $collection->getRecords();
+        $record = $collection->getNumberOfRecords() > 0 ? reset($records) : null;
+        $this->stopTimer();
+        
+        return $record;
+    }
+
+    /**
      * Returns a list of User objects matching the specified criteria
      *
      * This method does a search of all users and returns users matching the specific pattern
