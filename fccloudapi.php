@@ -232,7 +232,7 @@ final class MetadataSetRecord extends AbstractMetadataRecord
     public function __construct($record)
     {
         parent::__construct($record);
-        $this->initMembers($record);
+        $this->init($record);
         $this->initAttributes($record);
     }
 
@@ -240,7 +240,7 @@ final class MetadataSetRecord extends AbstractMetadataRecord
      * @param array $record
      * @throws \Exception
      */
-    private function initMembers(array $record)
+    private function init(array $record)
     {
         $expectedFields = ['id', 'name', 'description', 'disabled', 'read', 'write'];
         $missingFields = array_diff($expectedFields, array_keys($record));
@@ -280,7 +280,7 @@ final class MetadataSetRecord extends AbstractMetadataRecord
 
             $i = substr($key, 9, $_marker - 9);
             if (!is_numeric($i)) {
-                throw new \Exception("Malformed attribute: $key to $_marker");
+                throw new \Exception("Malformed attribute: $key at $_marker");
             }
 
             $attributesNumbers[(int) $i] = 1;
@@ -523,6 +523,10 @@ final class MetadataValueRecord extends AbstractMetadataRecord
         return $this->attributesTotal;
     }
 
+    /**
+     * @param array $record
+     * @throws \Exception
+     */
     private function init(array $record)
     {
         $expectedFields = ['id', 'name', 'description', 'settype', 'read', 'write'];
@@ -539,6 +543,10 @@ final class MetadataValueRecord extends AbstractMetadataRecord
         $this->write = (bool) $record['write'];
     }
 
+    /**
+     * @param array $record
+     * @throws \Exception
+     */
     private function initAttributes(array $record)
     {
         $attributesNumbers = [];
@@ -559,7 +567,7 @@ final class MetadataValueRecord extends AbstractMetadataRecord
 
             $i = substr($key, 9, $_marker - 9);
             if (!is_numeric($i)) {
-                throw new \Exception("Malformed attribute: $key to $_marker");
+                throw new \Exception("Malformed attribute: $key at $_marker");
             }
 
             $attributesNumbers[(int) $i] = 1;
