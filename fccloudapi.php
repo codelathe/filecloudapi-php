@@ -171,6 +171,46 @@ class DataRecord
     }
 }
 
+/**
+ * Utility methods for composing array of attributes to be sent to api.
+ * @package codelathe\fccloudapi
+ */
+trait MetadataAttributeDefinitionBuilderTrait
+{
+    /**
+     * @param array $attributes
+     * @return array
+     */
+    protected function build(array $attributes)
+    {
+        $builtAttributes = [];
+        // attributes
+        $nonStringFields = ['type', 'required', 'disabled'];
+        foreach ($attributes as $i => $attribute) {
+            foreach ($attribute as $fieldName => $fieldValue) {
+                $transformedFieldValue = $fieldValue;
+                if (in_array($fieldName, $nonStringFields)) {
+                    $transformedFieldValue = json_encode($fieldValue);
+                }
+
+                if ($fieldName === 'defaultvalue') {
+                    $transformedFieldValue = $this->reverseCastFromType($fieldValue, $builtAttributes["attribute{$i}_type"]);
+                }
+
+                $builtAttributes["attribute{$i}_{$fieldName}"] = $transformedFieldValue;
+            }
+        }
+        $builtAttributes['attributes_total'] = count($attributes);
+        
+        return $builtAttributes;
+    }
+}
+
+
+/**
+ * Metadata attribute value utility methods for typecasting.
+ * @package codelathe\fccloudapi
+ */
 trait MetadataAttributeTypeCasterTrait
 {
     /**
@@ -4618,8 +4658,19 @@ class CloudAdminAPI extends APICore
     }
 
     /**
-     * @param array $data
-     * @return CommandRecord
+     * Update a metadata set definition
+     * 
+     * @param string $id
+     * @param string $name
+     * @param string $description
+     * @param bool $disabled
+     * @param bool $allowAllPaths
+     * @param int $type
+     * @param array $attributes
+     * @param array $users
+     * @param array $groups
+     * @param array $paths
+     * @return CommandRecord|null
      */
     public function updateMetadataSet(
         string $id,
@@ -4635,6 +4686,75 @@ class CloudAdminAPI extends APICore
     ): ?CommandRecord {
         $this->startTimer();
         
+        $data = $this->composeMetadataSetDefinitionData(...func_get_args());
+        $response = $this->doPOST("{$this->server_url}/admin/updatemetadataset", http_build_query($data));
+        $collection = new Collection($response,  "command", CommandRecord::class);
+        $records = $collection->getRecords();
+        $record = $collection->getNumberOfRecords() > 0 ? reset($records) : null;
+        $this->stopTimer();
+        
+        return $record;
+    }
+
+    /**
+     * Add a new metadata set definition
+     * 
+     * @param string $name
+     * @param string $description
+     * @param bool $disabled
+     * @param bool $allowAllPaths
+     * @param array $attributes
+     * @param array $users
+     * @param array $groups
+     * @param array $paths
+     * @return CommandRecord|null
+     */
+    public function addMetadataSet(
+        string $name,
+        string $description,
+        bool $disabled,
+        bool $allowAllPaths,
+        array $attributes,
+        array $users,
+        array $groups,
+        array $paths
+    ): ?CommandRecord {
+        $this->startTimer();
+
+        $data = $this->composeMetadataSetDefinitionData(
+            '',
+            $name,
+            $description,
+            $disabled,
+            $allowAllPaths,
+            3,  // Only custom set definitions can be created.
+            $attributes,
+            $users,
+            $groups,
+            $paths
+        );
+
+        $response = $this->doPOST("{$this->server_url}/admin/addmetadataset", http_build_query($data));
+        $collection = new Collection($response,  "command", CommandRecord::class);
+        $records = $collection->getRecords();
+        $record = $collection->getNumberOfRecords() > 0 ? reset($records) : null;
+        $this->stopTimer();
+
+        return $record;
+    }
+    
+    private function composeMetadataSetDefinitionData(
+        string $id,
+        string $name,
+        string $description,
+        bool $disabled,
+        bool $allowAllPaths,
+        int $type,
+        array $attributes,
+        array $users,
+        array $groups,
+        array $paths
+    ): array {
         // basic fields
         $data = [
             'id' => $id,
@@ -4644,7 +4764,7 @@ class CloudAdminAPI extends APICore
             'allowallpaths' => json_encode($allowAllPaths),
             'type' => $type
         ];
-        
+
         // attributes
         $nonStringFields = ['type', 'required', 'disabled'];
         foreach ($attributes as $i => $attribute) {
@@ -4653,11 +4773,11 @@ class CloudAdminAPI extends APICore
                 if (in_array($fieldName, $nonStringFields)) {
                     $transformedFieldValue = json_encode($fieldValue);
                 }
-                
+
                 if ($fieldName === 'defaultvalue') {
                     $transformedFieldValue = $this->reverseCastFromType($fieldValue, $data["attribute{$i}_type"]);
                 }
-                
+
                 $data["attribute{$i}_{$fieldName}"] = $transformedFieldValue;
             }
         }
@@ -4685,14 +4805,8 @@ class CloudAdminAPI extends APICore
             $data["path{$i}"] = $path;
         }
         $data['paths_total'] = count($paths);
-
-        $response = $this->doPOST("{$this->server_url}/admin/updatemetadataset", http_build_query($data));
-        $collection = new Collection($response,  "command", CommandRecord::class);
-        $records = $collection->getRecords();
-        $record = $collection->getNumberOfRecords() > 0 ? reset($records) : null;
-        $this->stopTimer();
         
-        return $record;
+        return $data;
     }
 
     /**
