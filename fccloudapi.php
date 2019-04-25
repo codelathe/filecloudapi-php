@@ -171,8 +171,58 @@ class DataRecord
     }
 }
 
+trait MetadataAttributeTypeCasterTrait
+{
+    /**
+     * Cast response data to type
+     *
+     * @param mixed $data
+     * @param int $type
+     * @return array|bool|\DateTime|float|int
+     */
+    protected function castToType($data, int $type)
+    {
+        switch ($type) {
+            case AbstractMetadataRecord::TYPE_INTEGER:
+                return (int) $data;
+            case AbstractMetadataRecord::TYPE_DECIMAL:
+                return (float) $data;
+            case AbstractMetadataRecord::TYPE_BOOLEAN:
+                return !!json_decode($data);
+            case AbstractMetadataRecord::TYPE_DATE:
+                return \DateTime::createFromFormat('Y-m-d H:i:s', $data);
+            case AbstractMetadataRecord::TYPE_ARRAY:
+                return explode(',', $data);
+            default:
+                return $data;
+        }
+    }
+
+    /**
+     * Best effort reverse cast of attribute value for submission
+     * to api endpoint.
+     *
+     * @param $data
+     * @param int $type
+     * @return string|int|float|bool
+     */
+    protected function reverseCastFromType($data, int $type)
+    {
+        switch ($type) {
+            case 5:
+                return $data instanceof \DateTime ? $data->format('Y-m-d H:i:s') : $data;
+            case 2:
+            case 3:
+            case 4:
+                return json_encode($data);
+        }
+
+        return $data;
+    }
+}
+
 /**
- * Base MetadataRecord class
+ * Hold common constants, methods, etc.
  * @package codelathe\fccloudapi
  */
 abstract class AbstractMetadataRecord extends DataRecord
@@ -185,28 +235,7 @@ abstract class AbstractMetadataRecord extends DataRecord
     const TYPE_ENUMERATION = 6;
     const TYPE_ARRAY = 7;
 
-    /**
-     * @param mixed $data
-     * @param int $type
-     * @return array|bool|\DateTime|float|int
-     */
-    protected function castToType($data, int $type)
-    {
-        switch ($type) {
-            case self::TYPE_INTEGER:
-                return (int) $data;
-            case self::TYPE_DECIMAL:
-                return (float) $data;
-            case self::TYPE_BOOLEAN:
-                return !!json_decode($data);
-            case self::TYPE_DATE:
-                return \DateTime::createFromFormat('Y-m-d H:i:s', $data);
-            case self::TYPE_ARRAY:
-                return explode(',', $data);
-            default:
-                return $data;
-        }
-    }
+    use MetadataAttributeTypeCasterTrait;
 }
 
 /**
@@ -4561,6 +4590,7 @@ class CloudAPI extends APICore {
 
 class CloudAdminAPI extends APICore
 {
+    use MetadataAttributeTypeCasterTrait;
   
     public function __construct($SERVER_URL) {
         parent::__construct($SERVER_URL);
@@ -4625,16 +4655,7 @@ class CloudAdminAPI extends APICore
                 }
                 
                 if ($fieldName === 'defaultvalue') {
-                    switch ($data["attribute{$i}_type"]) {
-                        case 5:
-                            $transformedFieldValue = $fieldValue instanceof \DateTime ? $fieldValue->format('Y-m-d H:i:s') : $fieldValue;
-                            break;
-                        case 2:
-                        case 3:
-                        case 4:
-                            $transformedFieldValue = json_encode($fieldValue);
-                            break;
-                    }
+                    $transformedFieldValue = $this->reverseCastFromType($fieldValue, $data["attribute{$i}_type"]);
                 }
                 
                 $data["attribute{$i}_{$fieldName}"] = $transformedFieldValue;
