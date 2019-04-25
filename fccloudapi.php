@@ -4961,22 +4961,32 @@ class CloudAdminAPI extends APICore
        
     //API to get members of Group
     //RETURNS a Member Record
-    public function getMembersForGroup() {
+
+    /**
+     * Returns members of the group page
+     *
+     * @param string $groupId Group id
+     * @param int $start beginning of the page
+     * @param int $end end of tha page
+     * @return Collection|null
+     */
+    public function getMembersForGroup(string $groupId, int $start = 0, int $end = 10) {
         $this->startTimer();
         $url = $this->server_url . "/admin/index.php";
-        $postdata = 'op=checkadlogin';
+        $postdata = http_build_query([
+            'op' => 'getmembersforgroup',
+            'groupid' => $groupId,
+            'start' => $start,
+            'end' => $end
+        ]);
         $buffer = $this->doPOST($url, $postdata);
         $collection = new Collection($buffer,  "member", MembersRecord::class, "meta");
         $this->stopTimer();
-        if ($collection->getNumberOfRecords() > 0)
-           {
+        if ($collection->getNumberOfRecords() > 0) {
             return $collection;
-           }
-        else
-            {
-            return NULL;
-            }   
-        }    
+        }
+        return NULL;
+    }
         
     //API to get admin users 
     //RETURNS AdminUsersRecord
