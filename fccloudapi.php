@@ -6054,22 +6054,22 @@ class CloudAdminAPI extends APICore
         return NULL;
     }
     
-    public function getGroupsForUser($username){
+    public function getGroupsForUser($username, int $pageStart = 0, int $pageEnd = 10){
         $this->startTimer();
         $url = $this->server_url . "/admin/index.php";
-        $postdata = 'op=getgroupsforuser&username=' . $username . 'start=0&end=10';
+        $postdata = http_build_query([
+            'op' => 'getgroupsforuser',
+            'username' => $username,
+            'start' => $pageStart,
+            'end' => $pageEnd
+        ]);
         $buffer = $this->doPOST($url, $postdata);
         $collection = new Collection($buffer, "group", GroupRecord::class , "meta");
         $this->stopTimer();
-        if ($collection->getNumberOfRecords() > 0)
-        {
+        if ($collection->getNumberOfRecords() > 0) {
             return $collection;
         }
-        else
-        {
-            return $collection->getMetaRecord();
-        }
-        return NULL;    
+        return $collection->getMetaRecord();
     }
     
     public function setCheckList($param, $value)
