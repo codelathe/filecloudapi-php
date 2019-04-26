@@ -4,11 +4,19 @@
     "type": "library",
     "license": "Apache-2.0",
     "require": {
-      "php": "^7.1"
+        "php": "^7.1",
+        "ext-json": "*",
+        "ext-curl": "*"
     },
     "autoload": {
         "files": [
             "fccloudapi.php"
         ]
+    },
+    "autoload-dev": {
+        "psr-4": { "CodeLathe\\FileCloudApi\\Tests\\": "tests/" }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.5.8"
     }
 }
