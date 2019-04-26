@@ -171,42 +171,6 @@ class DataRecord
     }
 }
 
-/**
- * Utility methods for composing array of attributes to be sent to api.
- * TODO: Remove
- * @package codelathe\fccloudapi
- */
-trait MetadataAttributeDefinitionBuilderTrait
-{
-    /**
-     * @param array $attributes
-     * @return array
-     */
-    protected function build(array $attributes)
-    {
-        $builtAttributes = [];
-        // attributes
-        $nonStringFields = ['type', 'required', 'disabled'];
-        foreach ($attributes as $i => $attribute) {
-            foreach ($attribute as $fieldName => $fieldValue) {
-                $transformedFieldValue = $fieldValue;
-                if (in_array($fieldName, $nonStringFields)) {
-                    $transformedFieldValue = json_encode($fieldValue);
-                }
-
-                if ($fieldName === 'defaultvalue') {
-                    $transformedFieldValue = $this->reverseCastFromType($fieldValue, $builtAttributes["attribute{$i}_type"]);
-                }
-
-                $builtAttributes["attribute{$i}_{$fieldName}"] = $transformedFieldValue;
-            }
-        }
-        $builtAttributes['attributes_total'] = count($attributes);
-        
-        return $builtAttributes;
-    }
-}
-
 
 /**
  * Metadata attribute value utility methods for typecasting.
