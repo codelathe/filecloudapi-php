@@ -173,6 +173,7 @@ class DataRecord
 
 /**
  * Utility methods for composing array of attributes to be sent to api.
+ * TODO: Remove
  * @package codelathe\fccloudapi
  */
 trait MetadataAttributeDefinitionBuilderTrait
@@ -279,17 +280,15 @@ abstract class AbstractMetadataRecord extends DataRecord
 }
 
 /**
- * Class MetadataSetRecord
+ * Hold common constants, methods, etc.
  * @package codelathe\fccloudapi
  */
-final class MetadataSetRecord extends AbstractMetadataRecord
+abstract class BaseMetadataSetRecord extends AbstractMetadataRecord
 {
     private $id;
     private $name;
     private $description;
     private $disabled;
-    private $read;
-    private $write;
     private $attributes = [];
     private $attributesTotal;
 
@@ -311,7 +310,7 @@ final class MetadataSetRecord extends AbstractMetadataRecord
      */
     private function init(array $record)
     {
-        $expectedFields = ['id', 'name', 'description', 'disabled', 'read', 'write'];
+        $expectedFields = ['id', 'name', 'description', 'disabled'];
         $missingFields = array_diff($expectedFields, array_keys($record));
         if ($missingFields) {
             throw new \Exception(sprintf('Missing fields: %s', implode(', ', $missingFields)));
@@ -321,8 +320,6 @@ final class MetadataSetRecord extends AbstractMetadataRecord
         $this->name = $record['name'];
         $this->description = $record['description'];
         $this->disabled = $record['disabled'];
-        $this->read = $record['read'];
-        $this->write = $record['write'];
     }
 
     /**
@@ -438,6 +435,51 @@ final class MetadataSetRecord extends AbstractMetadataRecord
     }
 
     /**
+     * @return array
+     */
+    public function getAttributes(): array
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAttributesTotal(): int
+    {
+        return (int) $this->attributesTotal;
+    }
+}
+
+/**
+ * Class MetadataSetRecord
+ * @package codelathe\fccloudapi
+ */
+final class MetadataSetRecord extends BaseMetadataSetRecord
+{
+    private $read;
+    private $write;
+
+    /**
+     * MetadataSetRecord constructor.
+     * @param $record
+     * @throws \Exception
+     */
+    public function __construct($record)
+    {
+        parent::__construct($record);
+
+        $expectedFields = ['read', 'write'];
+        $missingFields = array_diff($expectedFields, array_keys($record));
+        if ($missingFields) {
+            throw new \Exception(sprintf('Missing fields: %s', implode(', ', $missingFields)));
+        }
+        
+        $this->read = (bool) $record['read'];
+        $this->write = (bool) $record['write'];
+    }
+
+    /**
      * @return bool
      */
     public function getRead(): bool
@@ -452,21 +494,220 @@ final class MetadataSetRecord extends AbstractMetadataRecord
     {
         return (bool) $this->write;
     }
+}
+
+/**
+ * Class AdminMetadataSetRecord
+ * @package codelathe\fccloudapi
+ */
+final class AdminMetadataSetRecord extends BaseMetadataSetRecord
+{
+    private $type;
+    private $allowAllPaths;
+    private $users;
+    private $usersTotal;
+    private $groups;
+    private $groupsTotal;
+    private $paths;
+    private $pathsTotal;
 
     /**
-     * @return array
+     * AdminMetadataSetRecord constructor.
+     * @param $record
+     * @throws \Exception
      */
-    public function getAttributes(): array
+    public function __construct(array $record)
     {
-        return $this->attributes;
+        parent::__construct($record);
+
+        $expectedFields = ['type', 'allowallpaths'];
+        $missingFields = array_diff($expectedFields, array_keys($record));
+        if ($missingFields) {
+            throw new \Exception(sprintf('Missing fields: %s', implode(', ', $missingFields)));
+        }
+        $this->type = (int) $record['type'];
+        $this->allowAllPaths = (bool) $record['allowallpaths'];
+        
+        $this->initUsers($record);
+        $this->initGroups($record);
+        $this->initPaths($record);
     }
 
     /**
-     * @return int
+     * @return mixed
      */
-    public function getAttributesTotal(): int
+    public function getType()
     {
-        return (int) $this->attributesTotal;
+        return $this->type;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAllowAllPaths()
+    {
+        return $this->allowAllPaths;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUsers()
+    {
+        return $this->users;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUsersTotal()
+    {
+        return $this->usersTotal;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGroups()
+    {
+        return $this->groups;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGroupsTotal()
+    {
+        return $this->groupsTotal;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPaths()
+    {
+        return $this->paths;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPathsTotal()
+    {
+        return $this->pathsTotal;
+    }
+
+    /**
+     * @param array $record
+     * @throws \Exception
+     */
+    private function initUsers(array $record)
+    {
+        $indices = $this->extractIndices($record, 'user');
+        $recordKeys = array_keys($record);
+        foreach ($indices as $index) {
+            $expectedFields = [
+                "user{$index}_name",
+                "user{$index}_read",
+                "user{$index}_write",
+            ];
+
+            $missingFields = array_diff($expectedFields, $recordKeys);
+            if ($missingFields) {
+                throw new \Exception(sprintf('Could not find expected user fields: %s', implode(', ', $missingFields)));
+            }
+
+            $user = [
+                "name" => $record["user{$index}_name"],
+                'read' => (bool) $record["user{$index}_read"],
+                'write' => (bool) $record["user{$index}_write"],
+            ];
+            
+            $this->users[] = $user;
+        }
+
+        $this->usersTotal = (int) $record['users_total'];
+    }
+
+    /**
+     * @param array $record
+     * @throws \Exception
+     */
+    private function initGroups(array $record)
+    {
+        $indices = $this->extractIndices($record, 'group');
+        $recordKeys = array_keys($record);
+        foreach ($indices as $index) {
+            $expectedFields = [
+                "group{$index}_id",
+                "group{$index}_name",
+                "group{$index}_read",
+                "group{$index}_write",
+            ];
+
+            $missingFields = array_diff($expectedFields, $recordKeys);
+            if ($missingFields) {
+                throw new \Exception(sprintf('Could not find expected user fields: %s', implode(', ', $missingFields)));
+            }
+
+            $group = [
+                'id' => $record["group{$index}_id"],
+                'name' => $record["group{$index}_name"],
+                'read' => (bool) $record["group{$index}_read"],
+                'write' => (bool) $record["group{$index}_write"],
+            ];
+
+            $this->groups[] = $group;
+        }
+
+        $this->groupsTotal = (int) $record['groups_total'];
+    }
+
+    /**
+     * @param array $record
+     * @throws \Exception
+     */
+    private function initPaths(array $record)
+    {
+        $indices = $this->extractIndices($record, 'path');
+        foreach ($indices as $index) {
+            $this->paths[] = $record["path{$index}"];
+        }
+
+        $this->pathsTotal = (int) $record['paths_total'];
+    }
+
+    /**
+     * @param array $record
+     * @param string $prefix
+     * @return array
+     * @throws \Exception
+     */
+    private function extractIndices(array $record, string $prefix)
+    {
+        $prefixLength = strlen($prefix);
+        $indices = [];
+        foreach ($record as $key => $elem) {
+            if (substr($key, 0, $prefixLength) !== $prefix) {
+                continue;
+            }
+
+            $_marker = strpos($key, '_', $prefixLength);
+            if ($_marker === false) {
+                // Maybe this is paths, simply get all chars after prefix
+                $_marker = strlen($key);
+            }
+
+            $i = substr($key, $prefixLength, $_marker - $prefixLength);
+            if (!is_numeric($i)) {
+                // Skip {$prefix}s_total
+                continue;
+            }
+
+            $indices[(int) $i] = 1;
+        }
+        
+        return array_keys($indices);
     }
 }
 
