@@ -4949,6 +4949,25 @@ class CloudAdminAPI extends APICore
     }
 
     /**
+     * Delete specified metadata set
+     * 
+     * @param string $setId
+     * @return CommandRecord|null
+     */
+    public function deleteMetadataSet(string $setId): ?CommandRecord
+    {
+        $response = $this->doPOST("{$this->server_url}/admin/deletemetadataset", http_build_query([
+            'setid' => $setId
+        ]));
+        $collection = new Collection($response,  "command", CommandRecord::class);
+        $records = $collection->getRecords();
+        $record = $collection->getNumberOfRecords() > 0 ? reset($records) : null;
+        $this->stopTimer();
+
+        return $record;
+    }
+
+    /**
      * Get metadata set definitions.
      * 
      * @param string $keyword
