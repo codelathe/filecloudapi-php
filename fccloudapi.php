@@ -5345,7 +5345,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getlicense';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, 'license', 'LicenseRecord');
+        $collection = new Collection($buffer, 'license', LicenseRecord::class);
         $this->stopTimer(); 
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
@@ -5361,7 +5361,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getadgroups';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "entry", "AdgroupRecord" , "meta");
+        $collection = new Collection($buffer, "entry", AdgroupRecord::class, "meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -5425,7 +5425,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getgroups';
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "group", "GroupRecord" , "meta");
+        $collection = new Collection($buffer, "group", GroupRecord::class , "meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -5440,22 +5440,32 @@ class CloudAdminAPI extends APICore
        
     //API to get members of Group
     //RETURNS a Member Record
-    public function getMembersForGroup() {
+
+    /**
+     * Returns members of the group page
+     *
+     * @param string $groupId Group id
+     * @param int $start beginning of the page
+     * @param int $end end of tha page
+     * @return Collection|null
+     */
+    public function getMembersForGroup(string $groupId, int $start = 0, int $end = 10) {
         $this->startTimer();
         $url = $this->server_url . "/admin/index.php";
-        $postdata = 'op=checkadlogin';
+        $postdata = http_build_query([
+            'op' => 'getmembersforgroup',
+            'groupid' => $groupId,
+            'start' => $start,
+            'end' => $end
+        ]);
         $buffer = $this->doPOST($url, $postdata);
         $collection = new Collection($buffer,  "member", MembersRecord::class, "meta");
         $this->stopTimer();
-        if ($collection->getNumberOfRecords() > 0)
-           {
+        if ($collection->getNumberOfRecords() > 0) {
             return $collection;
-           }
-        else
-            {
-            return NULL;
-            }   
         }
+        return NULL;
+    }
         
     //API to get admin users 
     //RETURNS AdminUsersRecord
@@ -6138,7 +6148,7 @@ class CloudAdminAPI extends APICore
             $postdata = 'op=getrmcclients&start=0&end=10';
         }
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "rmc_client", "RMCRecord" , "meta");
+        $collection = new Collection($buffer, "rmc_client", RMCRecord::class, "meta");
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
@@ -6184,7 +6194,7 @@ class CloudAdminAPI extends APICore
         $url = $this->server_url . "/admin/index.php";
         $postdata = 'op=getrmccommands&remote_client_id=' . $clientid ;
         $buffer = $this->doPOST($url, $postdata);
-        $collection = new Collection($buffer, "rmc_command", "RMCCommandRecord" );
+        $collection = new Collection($buffer, "rmc_command", RMCCommandRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
         {
