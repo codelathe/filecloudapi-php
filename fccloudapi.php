@@ -214,11 +214,11 @@ trait MetadataAttributeTypeCasterTrait
     protected function reverseCastFromType($data, int $type)
     {
         switch ($type) {
-            case 5:
+            case AbstractMetadataRecord::TYPE_DATE:
                 return $data instanceof \DateTime ? $data->format('Y-m-d H:i:s') : $data;
-            case 2:
-            case 3:
-            case 4:
+            case AbstractMetadataRecord::TYPE_INTEGER:
+            case AbstractMetadataRecord::TYPE_DECIMAL:
+            case AbstractMetadataRecord::TYPE_BOOLEAN:
                 return json_encode($data);
         }
 
