@@ -468,11 +468,11 @@ final class AdminMetadataSetRecord extends BaseMetadataSetRecord
 {
     private $type;
     private $allowAllPaths;
-    private $users;
+    private $users = [];
     private $usersTotal;
-    private $groups;
+    private $groups = [];
     private $groupsTotal;
-    private $paths;
+    private $paths = [];
     private $pathsTotal;
 
     /**
@@ -498,65 +498,65 @@ final class AdminMetadataSetRecord extends BaseMetadataSetRecord
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getType()
+    public function getType(): int
     {
         return $this->type;
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
-    public function getAllowAllPaths()
+    public function getAllowAllPaths(): bool
     {
         return $this->allowAllPaths;
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function getUsers()
+    public function getUsers(): array
     {
         return $this->users;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getUsersTotal()
+    public function getUsersTotal(): int
     {
         return $this->usersTotal;
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function getGroups()
+    public function getGroups(): array
     {
         return $this->groups;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getGroupsTotal()
+    public function getGroupsTotal(): int
     {
         return $this->groupsTotal;
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function getPaths()
+    public function getPaths(): array
     {
         return $this->paths;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getPathsTotal()
+    public function getPathsTotal(): int
     {
         return $this->pathsTotal;
     }
@@ -4979,7 +4979,22 @@ class CloudAdminAPI extends APICore
 
         return $collection;
     }
-    
+
+    /**
+     * Build the request data
+     * 
+     * @param string $id
+     * @param string $name
+     * @param string $description
+     * @param bool $disabled
+     * @param bool $allowAllPaths
+     * @param int $type
+     * @param array $attributes
+     * @param array $users
+     * @param array $groups
+     * @param array $paths
+     * @return array
+     */
     private function composeMetadataSetDefinitionData(
         string $id,
         string $name,
