@@ -4947,6 +4947,38 @@ class CloudAdminAPI extends APICore
 
         return $record;
     }
+
+    /**
+     * Get metadata set definitions.
+     * 
+     * @param string $keyword
+     * @param int $start Starts at 0
+     * @param int $end
+     * @return Collection
+     */
+    public function getMetadataSetDefinitions(
+        string $keyword = '',
+        int $start = 0,
+        int $end = 0
+    ): Collection {
+        $this->startTimer();
+        $response = $this->doPOST(
+            "{$this->server_url}/admin/getmetadatasetdefinitions",
+            http_build_query([
+                'keyword' => $keyword,
+                'start' => $start,
+                'end' => $end,
+            ])
+        );
+        $collection = new Collection(
+            $response,
+            "metadataset",
+            AdminMetadataSetRecord::class
+        );
+        $this->stopTimer();
+
+        return $collection;
+    }
     
     private function composeMetadataSetDefinitionData(
         string $id,
