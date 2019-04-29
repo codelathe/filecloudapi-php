@@ -195,7 +195,9 @@ trait MetadataAttributeTypeCasterTrait
             case AbstractMetadataRecord::TYPE_BOOLEAN:
                 return !!json_decode($data);
             case AbstractMetadataRecord::TYPE_DATE:
-                return \DateTime::createFromFormat('Y-m-d H:i:s', $data);
+                $date = \DateTime::createFromFormat('Y-m-d H:i:s', $data);
+                
+                return $date instanceof \DateTime ? $date : null;
             case AbstractMetadataRecord::TYPE_ARRAY:
                 return explode(',', $data);
             default:
