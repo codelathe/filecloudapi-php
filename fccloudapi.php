@@ -185,13 +185,13 @@ trait MetadataAttributeTypeCasterTrait
      * @param int $type
      * @return array|bool|\DateTime|float|int
      */
-    protected function castToType($data, int $type)
+    public function castToType($data, int $type)
     {
         switch ($type) {
             case AbstractMetadataRecord::TYPE_INTEGER:
-                return (int) $data;
+                return strlen($data) ? (int) $data : null;
             case AbstractMetadataRecord::TYPE_DECIMAL:
-                return (float) $data;
+                return strlen($data) ? (float) $data : null;
             case AbstractMetadataRecord::TYPE_BOOLEAN:
                 return !!json_decode($data);
             case AbstractMetadataRecord::TYPE_DATE:
