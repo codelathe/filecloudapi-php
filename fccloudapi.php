@@ -199,7 +199,7 @@ trait MetadataAttributeTypeCasterTrait
                 
                 return $date instanceof \DateTime ? $date : null;
             case AbstractMetadataRecord::TYPE_ARRAY:
-                return explode(',', $data);
+                return strlen($data) ? explode(',', $data) : [];
             default:
                 return $data;
         }

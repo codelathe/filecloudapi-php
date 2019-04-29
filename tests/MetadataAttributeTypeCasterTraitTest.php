@@ -27,4 +27,13 @@ class MetadataAttributeTypeCasterTraitTest extends TestCase
         $this->assertSame(1.1, $mock->castToType(1.1, AbstractMetadataRecord::TYPE_DECIMAL));
         $this->assertSame(null, $mock->castToType('', AbstractMetadataRecord::TYPE_DECIMAL));
     }
+    
+    public function testCastArray()
+    {
+        /** @var MetadataAttributeTypeCasterTrait $mock */
+        $mock = $this->getMockForTrait(MetadataAttributeTypeCasterTrait::class);
+
+        $this->assertSame(['foo', 'bar', 'baz'], $mock->castToType('foo,bar,baz', AbstractMetadataRecord::TYPE_ARRAY));
+        $this->assertSame([], $mock->castToType('', AbstractMetadataRecord::TYPE_ARRAY));
+    }
 }
