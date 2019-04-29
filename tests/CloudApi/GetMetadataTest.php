@@ -33,6 +33,13 @@ class GetMetadataTest extends TestCase
 
         $this->assertInstanceOf(AdminMetadataSetRecord::class, $metadataSet);
         $this->assertSame($setId, $metadataSet->getId());
+
+        // Check attributes
+        $this->assertNull($metadataSet->getAttributes()[0]['defaultvalue']);
+        
+        
+        // Check groups
+        $this->assertSame(1, $metadataSet->getGroupsTotal());
     }
     
     public function testGetNull()
@@ -59,31 +66,6 @@ class GetMetadataTest extends TestCase
         $metadataSet = $cloudApiMock->getMetadataSet($setId);
 
         $this->assertNull($metadataSet);
-    }
-    
-    public function testReturnsNullWhenNoDefaultValueForDate()
-    {
-        $serverUrl = 'https://fcapi.example.com';
-        $cloudApiMock = $this->getMockBuilder(AccessibleCloudAdminApi::class)
-            ->setConstructorArgs([$serverUrl])
-            ->setMethods(['init', '__destruct', 'doPost'])
-            ->getMock();
-
-        $mockApiResponse = $this->getSampleResponse();
-
-        $setId = 'aNonExistentId';
-        $cloudApiMock
-            ->expects($this->any())
-            ->method('doPost')
-            ->with("$serverUrl/admin/getmetadataset", http_build_query([
-                'setId' => $setId,
-            ]))
-            ->willReturn($mockApiResponse);
-
-        /** @var CloudAdminAPI $cloudApiMock */
-        $metadataSet = $cloudApiMock->getMetadataSet($setId);
-
-        $this->assertNull($metadataSet->getAttributes()[0]['defaultvalue']);
     }
     
     private function getSampleResponse()
