@@ -5000,6 +5000,33 @@ class CloudAdminAPI extends APICore
     }
 
     /**
+     * Get a single metadata set by id
+     * 
+     * @param string $setId
+     * @return AdminMetadataSetRecord|null
+     */
+    public function getMetadataSet(string $setId): ?AdminMetadataSetRecord
+    {
+        $this->startTimer();
+        $response = $this->doPOST(
+            "{$this->server_url}/admin/getmetadataset",
+            http_build_query([
+                'setId' => $setId,
+            ])
+        );
+        $collection = new Collection(
+            "<metadatasets>{$response}</metadatasets>",
+            "metadataset",
+            AdminMetadataSetRecord::class
+        );
+        $records = $collection->getRecords();
+        $record = $collection->getNumberOfRecords() > 0 ? reset($records) : null;
+        $this->stopTimer();
+
+        return $record;
+    }
+
+    /**
      * Build the request data
      * 
      * @param string $id
