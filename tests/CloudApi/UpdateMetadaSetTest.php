@@ -176,7 +176,7 @@ RESPONSE;
                     'type' => 7,
                     'required' => false,
                     'disabled' => false,
-                    'defaultvalue' => 'a,b,c,d',
+                    'defaultvalue' => ['a', 'b', 'c', 'd'],
                     'predefinedvalues_total' => 0,
                 ]
             ],
