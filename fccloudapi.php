@@ -5077,6 +5077,14 @@ class CloudAdminAPI extends APICore
                 if ($fieldName === 'defaultvalue') {
                     $transformedFieldValue = $this->reverseCastFromType($fieldValue, $data["attribute{$i}_type"]);
                 }
+                
+                if ($fieldName === 'predefinedvalue') {
+                    foreach ($fieldValue as $j => $val) {
+                        $data["attribute{$i}_predefinedvalue{$j}"] = $val;
+                    }
+                    
+                    continue;
+                }
 
                 $data["attribute{$i}_{$fieldName}"] = $transformedFieldValue;
             }
