@@ -222,6 +222,8 @@ trait MetadataAttributeTypeCasterTrait
             case AbstractMetadataRecord::TYPE_DECIMAL:
             case AbstractMetadataRecord::TYPE_BOOLEAN:
                 return json_encode($data);
+            case AbstractMetadataRecord::TYPE_ARRAY:
+                return is_array($data) ? implode(',', $data): $data;
         }
 
         return $data;
