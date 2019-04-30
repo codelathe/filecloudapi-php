@@ -166,9 +166,7 @@ RESPONSE;
                     'required' => false,
                     'disabled' => false,
                     'defaultvalue' => 'A',
-                    'predefinedvalue0' => 'A',
-                    'predefinedvalue1' => 'B',
-                    'predefinedvalue2' => 'C',
+                    'predefinedvalue' => ['A', 'B', 'C'],
                     'predefinedvalues_total' => 3,
                 ],
                 [
