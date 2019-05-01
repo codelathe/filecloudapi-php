@@ -107,7 +107,6 @@ RESPONSE;
             'allowallpaths' => false,
             'attributes' => [
                 [
-                    'attributeid' => '5cc06b9fadccf621f80217ce',
                     'name' => 'String',
                     'description' => 'String description',
                     'type' => 1,
@@ -117,7 +116,6 @@ RESPONSE;
                     'predefinedvalues_total' => 0,
                 ],
                 [
-                    'attributeid' => '5cc09402adccf621f8021956',
                     'name' => 'Int',
                     'description' => '',
                     'type' => 2,
@@ -127,7 +125,6 @@ RESPONSE;
                     'predefinedvalues_total' => 0,
                 ],
                 [
-                    'attributeid' => '5cc09402adccf621f8021957',
                     'name' => 'Dec',
                     'description' => '',
                     'type' => 3,
@@ -137,7 +134,6 @@ RESPONSE;
                     'predefinedvalues_total' => 0,
                 ],
                 [
-                    'attributeid' => '5cc09402adccf621f8021958',
                     'name' => 'Bool',
                     'description' => '',
                     'type' => 4,
@@ -147,7 +143,6 @@ RESPONSE;
                     'predefinedvalues_total' => 0,
                 ],
                 [
-                    'attributeid' => '5cc09402adccf621f8021959',
                     'name' => 'Date',
                     'description' => '',
                     'type' => 5,
@@ -157,7 +152,6 @@ RESPONSE;
                     'predefinedvalues_total' => 0,
                 ],
                 [
-                    'attributeid' => '5cc09402adccf621f802195a',
                     'name' => 'Select',
                     'description' => '',
                     'type' => 6,
@@ -170,7 +164,6 @@ RESPONSE;
                     'predefinedvalues_total' => 3,
                 ],
                 [
-                    'attributeid' => '5cc09402adccf621f802195b',
                     'name' => 'Array',
                     'description' => '',
                     'type' => 7,
@@ -216,7 +209,6 @@ RESPONSE;
             'disabled' => 'false',
             'allowallpaths' => 'false',
             'type' => '3',
-            'attribute0_attributeid' => '5cc06b9fadccf621f80217ce',
             'attribute0_name' => 'String',
             'attribute0_description' => 'String description',
             'attribute0_type' => '1',
@@ -224,7 +216,6 @@ RESPONSE;
             'attribute0_disabled' => 'false',
             'attribute0_defaultvalue' => 'Default string',
             'attribute0_predefinedvalues_total' => '0',
-            'attribute1_attributeid' => '5cc09402adccf621f8021956',
             'attribute1_name' => 'Int',
             'attribute1_description' => '',
             'attribute1_type' => '2',
@@ -232,7 +223,6 @@ RESPONSE;
             'attribute1_disabled' => 'false',
             'attribute1_defaultvalue' => '1000',
             'attribute1_predefinedvalues_total' => '0',
-            'attribute2_attributeid' => '5cc09402adccf621f8021957',
             'attribute2_name' => 'Dec',
             'attribute2_description' => '',
             'attribute2_type' => '3',
@@ -240,7 +230,6 @@ RESPONSE;
             'attribute2_disabled' => 'false',
             'attribute2_defaultvalue' => '1.1',
             'attribute2_predefinedvalues_total' => '0',
-            'attribute3_attributeid' => '5cc09402adccf621f8021958',
             'attribute3_name' => 'Bool',
             'attribute3_description' => '',
             'attribute3_type' => '4',
@@ -248,7 +237,6 @@ RESPONSE;
             'attribute3_disabled' => 'false',
             'attribute3_defaultvalue' => 'true',
             'attribute3_predefinedvalues_total' => '0',
-            'attribute4_attributeid' => '5cc09402adccf621f8021959',
             'attribute4_name' => 'Date',
             'attribute4_description' => '',
             'attribute4_type' => '5',
@@ -256,7 +244,6 @@ RESPONSE;
             'attribute4_disabled' => 'false',
             'attribute4_defaultvalue' => '2019-04-03 00:00:00',
             'attribute4_predefinedvalues_total' => '0',
-            'attribute5_attributeid' => '5cc09402adccf621f802195a',
             'attribute5_name' => 'Select',
             'attribute5_description' => '',
             'attribute5_type' => '6',
@@ -267,7 +254,6 @@ RESPONSE;
             'attribute5_predefinedvalue1' => 'B',
             'attribute5_predefinedvalue2' => 'C',
             'attribute5_predefinedvalues_total' => '3',
-            'attribute6_attributeid' => '5cc09402adccf621f802195b',
             'attribute6_name' => 'Array',
             'attribute6_description' => '',
             'attribute6_type' => '7',
