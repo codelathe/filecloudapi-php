@@ -158,9 +158,7 @@ RESPONSE;
                     'required' => false,
                     'disabled' => false,
                     'defaultvalue' => 'A',
-                    'predefinedvalue0' => 'A',
-                    'predefinedvalue1' => 'B',
-                    'predefinedvalue2' => 'C',
+                    'predefinedvalue' => ['A', 'B', 'C'],
                     'predefinedvalues_total' => 3,
                 ],
                 [
@@ -169,7 +167,7 @@ RESPONSE;
                     'type' => 7,
                     'required' => false,
                     'disabled' => false,
-                    'defaultvalue' => 'a,b,c,d',
+                    'defaultvalue' => ['a', 'b', 'c', 'd'],
                     'predefinedvalues_total' => 0,
                 ]
             ],
