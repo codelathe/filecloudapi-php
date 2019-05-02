@@ -228,6 +228,37 @@ trait MetadataAttributeTypeCasterTrait
 
         return $data;
     }
+
+    /**
+     * Best effort guess of datatype
+     * 
+     * @param $data
+     * @return int
+     */
+    protected function guessType($data)
+    {
+        if ($data instanceof \DateTime) {
+            return AbstractMetadataRecord::TYPE_DATE;
+        }
+        
+        if (is_int($data)) {
+            return AbstractMetadataRecord::TYPE_INTEGER;
+        }
+        
+        if (is_float($data)) {
+            return AbstractMetadataRecord::TYPE_DECIMAL;
+        }
+        
+        if (is_bool($data)) {
+            return AbstractMetadataRecord::TYPE_BOOLEAN;
+        }
+        
+        if (is_array($data)) {
+            return AbstractMetadataRecord::TYPE_ARRAY;
+        }
+        
+        return AbstractMetadataRecord::TYPE_TEXT;
+    }
 }
 
 /**
@@ -4533,6 +4564,102 @@ class CloudAPI extends APICore {
         $this->stopTimer();
         
         return $collection;
+    }
+
+    /**
+     * Get metadata sets for search
+     * 
+     * @param string $fullPath
+     * @return Collection|null
+     */
+    public function getMetadataSetsForSearch(string $fullPath): ?Collection
+    {
+        $this->startTimer();
+        $response = $this->doPOST("{$this->server_url}/core/getmetadatasetsforsearch", http_build_query([
+            'fullpath' => $fullPath
+        ]));
+        $collection = new Collection($response,  'metadataset', AdminMetadataSetRecord::class);
+        $this->stopTimer();
+
+        return $collection;
+    }
+
+    /**
+     * Add specified metadata set to file object
+     * 
+     * @param string $fullPath
+     * @param string $setId
+     * @return CommandRecord|null
+     */
+    public function addSetToFileObject(string $fullPath, string $setId): ?CommandRecord
+    {
+        $this->startTimer();
+        $response = $this->doPOST("{$this->server_url}/core/addsettofileobject", http_build_query([
+            'fullpath' => $fullPath,
+            'setid' => $setId,
+        ]));
+        $collection = new Collection($response,  'command', CommandRecord::class);
+        $records = $collection->getRecords();
+        $record = $collection->getNumberOfRecords() > 0 ? reset($records) : null;
+        $this->stopTimer();
+
+        return $record;
+    }
+
+    /**
+     * Remove specified metadata set from file object
+     * 
+     * @param string $fullPath
+     * @param string $setId
+     * @return CommandRecord|null
+     */
+    public function removeSetFromFileObject(string $fullPath, string $setId): ?CommandRecord
+    {
+        $this->startTimer();
+        $response = $this->doPOST("{$this->server_url}/core/removesetfromfileobject", http_build_query([
+            'fullpath' => $fullPath,
+            'setid' => $setId,
+        ]));
+        $collection = new Collection($response,  'command', CommandRecord::class);
+        $records = $collection->getRecords();
+        $record = $collection->getNumberOfRecords() > 0 ? reset($records) : null;
+        $this->stopTimer();
+
+        return $record;
+    }
+
+    use MetadataAttributeTypeCasterTrait;
+    
+    /**
+     * Update attribute values of a file object's metadata
+     * 
+     * @param string $setId
+     * @param string $fullPath
+     * @param array $attributes
+     * @return CommandRecord|null
+     */
+    public function saveAttributeValues(string $fullPath, string $setId, array $attributes): ?CommandRecord
+    {
+        $this->startTimer();
+        $args = [
+            'fullpath' => $fullPath,
+            'setid' => $setId,
+        ];
+        
+        foreach ($attributes as $i => $attribute) {
+            $args["attribute{$i}_attributeid"] = $attribute['attributeid'];
+            $args["attribute{$i}_value"] = $this->reverseCastFromType($attribute['value'], $this->guessType($attribute['value']));
+        }
+
+        $args['attributes_total'] = count($attributes);
+        
+        $response = $this->doPOST("{$this->server_url}/core/saveattributevalues", http_build_query($args));
+        $collection = new Collection($response,  'command', CommandRecord::class);
+        $records = $collection->getRecords();
+        $record = $collection->getNumberOfRecords() > 0 ? reset($records) : null;
+        $this->stopTimer();
+
+        return $record;
     }
     
     public function getUITranslations() {
