@@ -4574,6 +4574,28 @@ class CloudAPI extends APICore {
 
         return $record;
     }
+
+    /**
+     * Remove specified metadata set from file object
+     * 
+     * @param string $fullPath
+     * @param string $setId
+     * @return CommandRecord|null
+     */
+    public function removeSetFromFileObject(string $fullPath, string $setId): ?CommandRecord
+    {
+        $this->startTimer();
+        $response = $this->doPOST("{$this->server_url}/core/removesetfromfileobject", http_build_query([
+            'fullpath' => $fullPath,
+            'setid' => $setId,
+        ]));
+        $collection = new Collection($response,  'command', CommandRecord::class);
+        $records = $collection->getRecords();
+        $record = $collection->getNumberOfRecords() > 0 ? reset($records) : null;
+        $this->stopTimer();
+
+        return $record;
+    }
     
     public function getUITranslations() {
         $this->startTimer();
