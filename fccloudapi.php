@@ -4534,6 +4534,24 @@ class CloudAPI extends APICore {
         
         return $collection;
     }
+
+    /**
+     * Get metadata sets for search
+     * 
+     * @param string $fullPath
+     * @return Collection|null
+     */
+    public function getMetadataSetsForSearch(string $fullPath): ?Collection
+    {
+        $this->startTimer();
+        $response = $this->doPOST("{$this->server_url}/core/getmetadatasetsforsearch", http_build_query([
+            'fullpath' => $fullPath
+        ]));
+        $collection = new Collection($response,  'metadataset', AdminMetadataSetRecord::class);
+        $this->stopTimer();
+
+        return $collection;
+    }
     
     public function getUITranslations() {
         $this->startTimer();
