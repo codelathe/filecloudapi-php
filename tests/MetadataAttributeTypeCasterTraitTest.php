@@ -2,7 +2,7 @@
 
 namespace CodeLathe\FileCloudApi\Tests;
 
-use codelathe\fccloudapi\AbstractMetadataRecord;
+use codelathe\fccloudapi\MetadataAttributeTypes;
 use codelathe\fccloudapi\MetadataAttributeTypeCasterTrait;
 use PHPUnit\Framework\TestCase;
 
@@ -13,9 +13,9 @@ class MetadataAttributeTypeCasterTraitTest extends TestCase
         /** @var MetadataAttributeTypeCasterTrait $mock */
         $mock = $this->getMockForTrait(MetadataAttributeTypeCasterTrait::class);
         
-        $this->assertSame(1, $mock->castToType('1', AbstractMetadataRecord::TYPE_INTEGER));
-        $this->assertSame(1, $mock->castToType(1, AbstractMetadataRecord::TYPE_INTEGER));
-        $this->assertSame(null, $mock->castToType('', AbstractMetadataRecord::TYPE_INTEGER));
+        $this->assertSame(1, $mock->castToType('1', MetadataAttributeTypes::TYPE_INTEGER));
+        $this->assertSame(1, $mock->castToType(1, MetadataAttributeTypes::TYPE_INTEGER));
+        $this->assertSame(null, $mock->castToType('', MetadataAttributeTypes::TYPE_INTEGER));
     }
 
     public function testCastFloat()
@@ -23,9 +23,9 @@ class MetadataAttributeTypeCasterTraitTest extends TestCase
         /** @var MetadataAttributeTypeCasterTrait $mock */
         $mock = $this->getMockForTrait(MetadataAttributeTypeCasterTrait::class);
 
-        $this->assertSame(1.1, $mock->castToType('1.1', AbstractMetadataRecord::TYPE_DECIMAL));
-        $this->assertSame(1.1, $mock->castToType(1.1, AbstractMetadataRecord::TYPE_DECIMAL));
-        $this->assertSame(null, $mock->castToType('', AbstractMetadataRecord::TYPE_DECIMAL));
+        $this->assertSame(1.1, $mock->castToType('1.1', MetadataAttributeTypes::TYPE_DECIMAL));
+        $this->assertSame(1.1, $mock->castToType(1.1, MetadataAttributeTypes::TYPE_DECIMAL));
+        $this->assertSame(null, $mock->castToType('', MetadataAttributeTypes::TYPE_DECIMAL));
     }
     
     public function testCastArray()
@@ -33,7 +33,7 @@ class MetadataAttributeTypeCasterTraitTest extends TestCase
         /** @var MetadataAttributeTypeCasterTrait $mock */
         $mock = $this->getMockForTrait(MetadataAttributeTypeCasterTrait::class);
 
-        $this->assertSame(['foo', 'bar', 'baz'], $mock->castToType('foo,bar,baz', AbstractMetadataRecord::TYPE_ARRAY));
-        $this->assertSame([], $mock->castToType('', AbstractMetadataRecord::TYPE_ARRAY));
+        $this->assertSame(['foo', 'bar', 'baz'], $mock->castToType('foo,bar,baz', MetadataAttributeTypes::TYPE_ARRAY));
+        $this->assertSame([], $mock->castToType('', MetadataAttributeTypes::TYPE_ARRAY));
     }
 }
