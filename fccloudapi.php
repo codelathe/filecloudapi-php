@@ -188,17 +188,17 @@ trait MetadataAttributeTypeCasterTrait
     public function castToType($data, int $type)
     {
         switch ($type) {
-            case AbstractMetadataRecord::TYPE_INTEGER:
+            case MetadataAttributeTypes::TYPE_INTEGER:
                 return strlen($data) ? (int) $data : null;
-            case AbstractMetadataRecord::TYPE_DECIMAL:
+            case MetadataAttributeTypes::TYPE_DECIMAL:
                 return strlen($data) ? (float) $data : null;
-            case AbstractMetadataRecord::TYPE_BOOLEAN:
+            case MetadataAttributeTypes::TYPE_BOOLEAN:
                 return !!json_decode($data);
-            case AbstractMetadataRecord::TYPE_DATE:
+            case MetadataAttributeTypes::TYPE_DATE:
                 $date = \DateTime::createFromFormat('Y-m-d H:i:s', $data);
                 
                 return $date instanceof \DateTime ? $date : null;
-            case AbstractMetadataRecord::TYPE_ARRAY:
+            case MetadataAttributeTypes::TYPE_ARRAY:
                 return strlen($data) ? explode(',', $data) : [];
             default:
                 return $data;
@@ -216,13 +216,13 @@ trait MetadataAttributeTypeCasterTrait
     protected function reverseCastFromType($data, int $type)
     {
         switch ($type) {
-            case AbstractMetadataRecord::TYPE_DATE:
+            case MetadataAttributeTypes::TYPE_DATE:
                 return $data instanceof \DateTime ? $data->format('Y-m-d H:i:s') : $data;
-            case AbstractMetadataRecord::TYPE_INTEGER:
-            case AbstractMetadataRecord::TYPE_DECIMAL:
-            case AbstractMetadataRecord::TYPE_BOOLEAN:
+            case MetadataAttributeTypes::TYPE_INTEGER:
+            case MetadataAttributeTypes::TYPE_DECIMAL:
+            case MetadataAttributeTypes::TYPE_BOOLEAN:
                 return json_encode($data);
-            case AbstractMetadataRecord::TYPE_ARRAY:
+            case MetadataAttributeTypes::TYPE_ARRAY:
                 return is_array($data) ? implode(',', $data): $data;
         }
 
@@ -262,10 +262,10 @@ trait MetadataAttributeTypeCasterTrait
 }
 
 /**
- * Hold common constants, methods, etc.
+ * Class AbstractMetadataRecord
  * @package codelathe\fccloudapi
  */
-abstract class AbstractMetadataRecord extends DataRecord
+final class MetadataAttributeTypes
 {
     const TYPE_TEXT = 1;
     const TYPE_INTEGER = 2;
@@ -274,34 +274,24 @@ abstract class AbstractMetadataRecord extends DataRecord
     const TYPE_DATE = 5;
     const TYPE_ENUMERATION = 6;
     const TYPE_ARRAY = 7;
-
-    use MetadataAttributeTypeCasterTrait;
+    
+    private function __construct($record) {}
 }
 
 /**
- * Hold common constants, methods, etc.
+ * Trait MetadataSetTrait
  * @package codelathe\fccloudapi
  */
-abstract class BaseMetadataSetRecord extends AbstractMetadataRecord
+trait MetadataSetTrait
 {
+    use MetadataAttributeTypeCasterTrait;
+
     private $id;
     private $name;
     private $description;
     private $disabled;
     private $attributes = [];
     private $attributesTotal;
-
-    /**
-     * MetadataSetRecord constructor.
-     * @param $record
-     * @throws \Exception
-     */
-    public function __construct($record)
-    {
-        parent::__construct($record);
-        $this->init($record);
-        $this->initAttributes($record);
-    }
 
     /**
      * @param array $record
@@ -454,8 +444,10 @@ abstract class BaseMetadataSetRecord extends AbstractMetadataRecord
  * Class MetadataSetRecord
  * @package codelathe\fccloudapi
  */
-final class MetadataSetRecord extends BaseMetadataSetRecord
+final class MetadataSetRecord extends DataRecord
 {
+    use MetadataSetTrait;
+    
     private $read;
     private $write;
 
@@ -467,13 +459,15 @@ final class MetadataSetRecord extends BaseMetadataSetRecord
     public function __construct($record)
     {
         parent::__construct($record);
+        $this->init($record);
+        $this->initAttributes($record);
 
         $expectedFields = ['read', 'write'];
         $missingFields = array_diff($expectedFields, array_keys($record));
         if ($missingFields) {
             throw new \Exception(sprintf('Missing fields: %s', implode(', ', $missingFields)));
         }
-        
+
         $this->read = (bool) $record['read'];
         $this->write = (bool) $record['write'];
     }
@@ -499,8 +493,10 @@ final class MetadataSetRecord extends BaseMetadataSetRecord
  * Class AdminMetadataSetRecord
  * @package codelathe\fccloudapi
  */
-final class AdminMetadataSetRecord extends BaseMetadataSetRecord
+final class AdminMetadataSetRecord extends DataRecord
 {
+    use MetadataSetTrait;
+    
     private $type;
     private $allowAllPaths;
     private $users = [];
@@ -518,6 +514,8 @@ final class AdminMetadataSetRecord extends BaseMetadataSetRecord
     public function __construct(array $record)
     {
         parent::__construct($record);
+        $this->init($record);
+        $this->initAttributes($record);
 
         $expectedFields = ['type', 'allowallpaths'];
         $missingFields = array_diff($expectedFields, array_keys($record));
@@ -714,8 +712,10 @@ final class AdminMetadataSetRecord extends BaseMetadataSetRecord
  * Class MetadataValueRecord
  * @package codelathe\fccloudapi
  */
-final class MetadataValueRecord extends AbstractMetadataRecord
+final class MetadataValueRecord extends DataRecord
 {
+    use MetadataAttributeTypeCasterTrait;
+
     /**
      * @var string
      */
