@@ -238,31 +238,31 @@ trait MetadataAttributeTypeCasterTrait
     protected function guessType($data)
     {
         if ($data instanceof \DateTime) {
-            return AbstractMetadataRecord::TYPE_DATE;
+            return MetadataAttributeTypes::TYPE_DATE;
         }
         
         if (is_int($data)) {
-            return AbstractMetadataRecord::TYPE_INTEGER;
+            return MetadataAttributeTypes::TYPE_INTEGER;
         }
         
         if (is_float($data)) {
-            return AbstractMetadataRecord::TYPE_DECIMAL;
+            return MetadataAttributeTypes::TYPE_DECIMAL;
         }
         
         if (is_bool($data)) {
-            return AbstractMetadataRecord::TYPE_BOOLEAN;
+            return MetadataAttributeTypes::TYPE_BOOLEAN;
         }
         
         if (is_array($data)) {
-            return AbstractMetadataRecord::TYPE_ARRAY;
+            return MetadataAttributeTypes::TYPE_ARRAY;
         }
         
-        return AbstractMetadataRecord::TYPE_TEXT;
+        return MetadataAttributeTypes::TYPE_TEXT;
     }
 }
 
 /**
- * Class AbstractMetadataRecord
+ * Class MetadataAttributeTypes
  * @package codelathe\fccloudapi
  */
 final class MetadataAttributeTypes
