@@ -171,11 +171,70 @@ class DataRecord
     }
 }
 
+
 /**
- * Base MetadataRecord class
+ * Metadata attribute value utility methods for typecasting.
  * @package codelathe\fccloudapi
  */
-abstract class AbstractMetadataRecord extends DataRecord
+trait MetadataAttributeTypeCasterTrait
+{
+    /**
+     * Cast response data to type
+     *
+     * @param mixed $data
+     * @param int $type
+     * @return array|bool|\DateTime|float|int
+     */
+    public function castToType($data, int $type)
+    {
+        switch ($type) {
+            case MetadataAttributeTypes::TYPE_INTEGER:
+                return strlen($data) ? (int) $data : null;
+            case MetadataAttributeTypes::TYPE_DECIMAL:
+                return strlen($data) ? (float) $data : null;
+            case MetadataAttributeTypes::TYPE_BOOLEAN:
+                return !!json_decode($data);
+            case MetadataAttributeTypes::TYPE_DATE:
+                $date = \DateTime::createFromFormat('Y-m-d H:i:s', $data);
+                
+                return $date instanceof \DateTime ? $date : null;
+            case MetadataAttributeTypes::TYPE_ARRAY:
+                return strlen($data) ? explode(',', $data) : [];
+            default:
+                return $data;
+        }
+    }
+
+    /**
+     * Best effort reverse cast of attribute value for submission
+     * to api endpoint.
+     *
+     * @param $data
+     * @param int $type
+     * @return string|int|float|bool
+     */
+    protected function reverseCastFromType($data, int $type)
+    {
+        switch ($type) {
+            case MetadataAttributeTypes::TYPE_DATE:
+                return $data instanceof \DateTime ? $data->format('Y-m-d H:i:s') : $data;
+            case MetadataAttributeTypes::TYPE_INTEGER:
+            case MetadataAttributeTypes::TYPE_DECIMAL:
+            case MetadataAttributeTypes::TYPE_BOOLEAN:
+                return json_encode($data);
+            case MetadataAttributeTypes::TYPE_ARRAY:
+                return is_array($data) ? implode(',', $data): $data;
+        }
+
+        return $data;
+    }
+}
+
+/**
+ * Class AbstractMetadataRecord
+ * @package codelathe\fccloudapi
+ */
+final class MetadataAttributeTypes
 {
     const TYPE_TEXT = 1;
     const TYPE_INTEGER = 2;
@@ -184,57 +243,24 @@ abstract class AbstractMetadataRecord extends DataRecord
     const TYPE_DATE = 5;
     const TYPE_ENUMERATION = 6;
     const TYPE_ARRAY = 7;
-
-    /**
-     * @param mixed $data
-     * @param int $type
-     * @return array|bool|\DateTime|float|int
-     */
-    protected function castToType($data, int $type)
-    {
-        switch ($type) {
-            case self::TYPE_INTEGER:
-                return (int) $data;
-            case self::TYPE_DECIMAL:
-                return (float) $data;
-            case self::TYPE_BOOLEAN:
-                return !!json_decode($data);
-            case self::TYPE_DATE:
-                return \DateTime::createFromFormat('Y-m-d H:i:s', $data);
-            case self::TYPE_ARRAY:
-                return explode(',', $data);
-            default:
-                return $data;
-        }
-    }
+    
+    private function __construct($record) {}
 }
 
 /**
- * Class MetadataSetRecord
+ * Trait MetadataSetTrait
  * @package codelathe\fccloudapi
  */
-final class MetadataSetRecord extends AbstractMetadataRecord
+trait MetadataSetTrait
 {
+    use MetadataAttributeTypeCasterTrait;
+
     private $id;
     private $name;
     private $description;
     private $disabled;
-    private $read;
-    private $write;
     private $attributes = [];
     private $attributesTotal;
-
-    /**
-     * MetadataSetRecord constructor.
-     * @param $record
-     * @throws \Exception
-     */
-    public function __construct($record)
-    {
-        parent::__construct($record);
-        $this->init($record);
-        $this->initAttributes($record);
-    }
 
     /**
      * @param array $record
@@ -242,7 +268,7 @@ final class MetadataSetRecord extends AbstractMetadataRecord
      */
     private function init(array $record)
     {
-        $expectedFields = ['id', 'name', 'description', 'disabled', 'read', 'write'];
+        $expectedFields = ['id', 'name', 'description', 'disabled'];
         $missingFields = array_diff($expectedFields, array_keys($record));
         if ($missingFields) {
             throw new \Exception(sprintf('Missing fields: %s', implode(', ', $missingFields)));
@@ -252,8 +278,6 @@ final class MetadataSetRecord extends AbstractMetadataRecord
         $this->name = $record['name'];
         $this->description = $record['description'];
         $this->disabled = $record['disabled'];
-        $this->read = $record['read'];
-        $this->write = $record['write'];
     }
 
     /**
@@ -369,22 +393,6 @@ final class MetadataSetRecord extends AbstractMetadataRecord
     }
 
     /**
-     * @return bool
-     */
-    public function getRead(): bool
-    {
-        return (bool) $this->read;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getWrite(): bool
-    {
-        return (bool) $this->write;
-    }
-
-    /**
      * @return array
      */
     public function getAttributes(): array
@@ -402,11 +410,281 @@ final class MetadataSetRecord extends AbstractMetadataRecord
 }
 
 /**
+ * Class MetadataSetRecord
+ * @package codelathe\fccloudapi
+ */
+final class MetadataSetRecord extends DataRecord
+{
+    use MetadataSetTrait;
+    
+    private $read;
+    private $write;
+
+    /**
+     * MetadataSetRecord constructor.
+     * @param $record
+     * @throws \Exception
+     */
+    public function __construct($record)
+    {
+        parent::__construct($record);
+        $this->init($record);
+        $this->initAttributes($record);
+
+        $expectedFields = ['read', 'write'];
+        $missingFields = array_diff($expectedFields, array_keys($record));
+        if ($missingFields) {
+            throw new \Exception(sprintf('Missing fields: %s', implode(', ', $missingFields)));
+        }
+
+        $this->read = (bool) $record['read'];
+        $this->write = (bool) $record['write'];
+    }
+
+    /**
+     * @return bool
+     */
+    public function getRead(): bool
+    {
+        return (bool) $this->read;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getWrite(): bool
+    {
+        return (bool) $this->write;
+    }
+}
+
+/**
+ * Class AdminMetadataSetRecord
+ * @package codelathe\fccloudapi
+ */
+final class AdminMetadataSetRecord extends DataRecord
+{
+    use MetadataSetTrait;
+    
+    private $type;
+    private $allowAllPaths;
+    private $users = [];
+    private $usersTotal;
+    private $groups = [];
+    private $groupsTotal;
+    private $paths = [];
+    private $pathsTotal;
+
+    /**
+     * AdminMetadataSetRecord constructor.
+     * @param $record
+     * @throws \Exception
+     */
+    public function __construct(array $record)
+    {
+        parent::__construct($record);
+        $this->init($record);
+        $this->initAttributes($record);
+
+        $expectedFields = ['type', 'allowallpaths'];
+        $missingFields = array_diff($expectedFields, array_keys($record));
+        if ($missingFields) {
+            throw new \Exception(sprintf('Missing fields: %s', implode(', ', $missingFields)));
+        }
+        $this->type = (int) $record['type'];
+        $this->allowAllPaths = (bool) $record['allowallpaths'];
+        
+        $this->initUsers($record);
+        $this->initGroups($record);
+        $this->initPaths($record);
+    }
+
+    /**
+     * @return int
+     */
+    public function getType(): int
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getAllowAllPaths(): bool
+    {
+        return $this->allowAllPaths;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUsers(): array
+    {
+        return $this->users;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUsersTotal(): int
+    {
+        return $this->usersTotal;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGroups(): array
+    {
+        return $this->groups;
+    }
+
+    /**
+     * @return int
+     */
+    public function getGroupsTotal(): int
+    {
+        return $this->groupsTotal;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPaths(): array
+    {
+        return $this->paths;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPathsTotal(): int
+    {
+        return $this->pathsTotal;
+    }
+
+    /**
+     * @param array $record
+     * @throws \Exception
+     */
+    private function initUsers(array $record)
+    {
+        $indices = $this->extractIndices($record, 'user');
+        $recordKeys = array_keys($record);
+        foreach ($indices as $index) {
+            $expectedFields = [
+                "user{$index}_name",
+                "user{$index}_read",
+                "user{$index}_write",
+            ];
+
+            $missingFields = array_diff($expectedFields, $recordKeys);
+            if ($missingFields) {
+                throw new \Exception(sprintf('Could not find expected user fields: %s', implode(', ', $missingFields)));
+            }
+
+            $user = [
+                "name" => $record["user{$index}_name"],
+                'read' => (bool) $record["user{$index}_read"],
+                'write' => (bool) $record["user{$index}_write"],
+            ];
+            
+            $this->users[] = $user;
+        }
+
+        $this->usersTotal = (int) $record['users_total'];
+    }
+
+    /**
+     * @param array $record
+     * @throws \Exception
+     */
+    private function initGroups(array $record)
+    {
+        $indices = $this->extractIndices($record, 'group');
+        $recordKeys = array_keys($record);
+        foreach ($indices as $index) {
+            $expectedFields = [
+                "group{$index}_id",
+                "group{$index}_name",
+                "group{$index}_read",
+                "group{$index}_write",
+            ];
+
+            $missingFields = array_diff($expectedFields, $recordKeys);
+            if ($missingFields) {
+                throw new \Exception(sprintf('Could not find expected user fields: %s', implode(', ', $missingFields)));
+            }
+
+            $group = [
+                'id' => $record["group{$index}_id"],
+                'name' => $record["group{$index}_name"],
+                'read' => (bool) $record["group{$index}_read"],
+                'write' => (bool) $record["group{$index}_write"],
+            ];
+
+            $this->groups[] = $group;
+        }
+
+        $this->groupsTotal = (int) $record['groups_total'];
+    }
+
+    /**
+     * @param array $record
+     * @throws \Exception
+     */
+    private function initPaths(array $record)
+    {
+        $indices = $this->extractIndices($record, 'path');
+        foreach ($indices as $index) {
+            $this->paths[] = $record["path{$index}"];
+        }
+
+        $this->pathsTotal = (int) $record['paths_total'];
+    }
+
+    /**
+     * @param array $record
+     * @param string $prefix
+     * @return array
+     * @throws \Exception
+     */
+    private function extractIndices(array $record, string $prefix)
+    {
+        $prefixLength = strlen($prefix);
+        $indices = [];
+        foreach ($record as $key => $elem) {
+            if (substr($key, 0, $prefixLength) !== $prefix) {
+                continue;
+            }
+
+            $_marker = strpos($key, '_', $prefixLength);
+            if ($_marker === false) {
+                // Maybe this is paths, simply get all chars after prefix
+                $_marker = strlen($key);
+            }
+
+            $i = substr($key, $prefixLength, $_marker - $prefixLength);
+            if (!is_numeric($i)) {
+                // Skip {$prefix}s_total
+                continue;
+            }
+
+            $indices[(int) $i] = 1;
+        }
+        
+        return array_keys($indices);
+    }
+}
+
+/**
  * Class MetadataValueRecord
  * @package codelathe\fccloudapi
  */
-final class MetadataValueRecord extends AbstractMetadataRecord
+final class MetadataValueRecord extends DataRecord
 {
+    use MetadataAttributeTypeCasterTrait;
+
     /**
      * @var string
      */
@@ -4642,6 +4920,7 @@ class CloudAPI extends APICore {
 
 class CloudAdminAPI extends APICore
 {
+    use MetadataAttributeTypeCasterTrait;
   
     public function __construct($SERVER_URL, $debug = false) {
         parent::__construct($SERVER_URL, $debug);
@@ -4666,6 +4945,259 @@ class CloudAdminAPI extends APICore
         if ($collection->getNumberOfRecords() > 0)
             return $collection->getRecords()[0];
         return NULL;
+    }
+
+    /**
+     * Update a metadata set definition
+     * 
+     * @param string $id
+     * @param string $name
+     * @param string $description
+     * @param bool $disabled
+     * @param bool $allowAllPaths
+     * @param int $type
+     * @param array $attributes
+     * @param array $users
+     * @param array $groups
+     * @param array $paths
+     * @return CommandRecord|null
+     */
+    public function updateMetadataSet(
+        string $id,
+        string $name,
+        string $description,
+        bool $disabled,
+        bool $allowAllPaths,
+        int $type,
+        array $attributes,
+        array $users,
+        array $groups,
+        array $paths
+    ): ?CommandRecord {
+        $this->startTimer();
+        
+        $data = $this->composeMetadataSetDefinitionData(...func_get_args());
+        $response = $this->doPOST("{$this->server_url}/admin/updatemetadataset", http_build_query($data));
+        $collection = new Collection($response,  "command", CommandRecord::class);
+        $records = $collection->getRecords();
+        $record = $collection->getNumberOfRecords() > 0 ? reset($records) : null;
+        $this->stopTimer();
+        
+        return $record;
+    }
+
+    /**
+     * Add a new metadata set definition
+     * 
+     * @param string $name
+     * @param string $description
+     * @param bool $disabled
+     * @param bool $allowAllPaths
+     * @param array $attributes
+     * @param array $users
+     * @param array $groups
+     * @param array $paths
+     * @return CommandRecord|null
+     */
+    public function addMetadataSet(
+        string $name,
+        string $description,
+        bool $disabled,
+        bool $allowAllPaths,
+        array $attributes,
+        array $users,
+        array $groups,
+        array $paths
+    ): ?CommandRecord {
+        $this->startTimer();
+
+        $data = $this->composeMetadataSetDefinitionData(
+            '',
+            $name,
+            $description,
+            $disabled,
+            $allowAllPaths,
+            3,  // Only custom set definitions can be created.
+            $attributes,
+            $users,
+            $groups,
+            $paths
+        );
+
+        $response = $this->doPOST("{$this->server_url}/admin/addmetadataset", http_build_query($data));
+        $collection = new Collection($response,  "command", CommandRecord::class);
+        $records = $collection->getRecords();
+        $record = $collection->getNumberOfRecords() > 0 ? reset($records) : null;
+        $this->stopTimer();
+
+        return $record;
+    }
+
+    /**
+     * Delete specified metadata set
+     * 
+     * @param string $setId
+     * @return CommandRecord|null
+     */
+    public function deleteMetadataSet(string $setId): ?CommandRecord
+    {
+        $response = $this->doPOST("{$this->server_url}/admin/deletemetadataset", http_build_query([
+            'setid' => $setId
+        ]));
+        $collection = new Collection($response,  "command", CommandRecord::class);
+        $records = $collection->getRecords();
+        $record = $collection->getNumberOfRecords() > 0 ? reset($records) : null;
+        $this->stopTimer();
+
+        return $record;
+    }
+
+    /**
+     * Get metadata set definitions.
+     * 
+     * @param string $keyword
+     * @param int $start Starts at 0
+     * @param int $end
+     * @return Collection
+     */
+    public function getMetadataSetDefinitions(
+        string $keyword = '',
+        int $start = 0,
+        int $end = 0
+    ): Collection {
+        $this->startTimer();
+        $response = $this->doPOST(
+            "{$this->server_url}/admin/getmetadatasetdefinitions",
+            http_build_query([
+                'keyword' => $keyword,
+                'start' => $start,
+                'end' => $end,
+            ])
+        );
+        $collection = new Collection(
+            $response,
+            "metadataset",
+            AdminMetadataSetRecord::class
+        );
+        $this->stopTimer();
+
+        return $collection;
+    }
+
+    /**
+     * Get a single metadata set by id
+     * 
+     * @param string $setId
+     * @return AdminMetadataSetRecord|null
+     */
+    public function getMetadataSet(string $setId): ?AdminMetadataSetRecord
+    {
+        $this->startTimer();
+        $response = $this->doPOST(
+            "{$this->server_url}/admin/getmetadataset",
+            http_build_query([
+                'setId' => $setId,
+            ])
+        );
+        $collection = new Collection(
+            "<metadatasets>{$response}</metadatasets>",
+            "metadataset",
+            AdminMetadataSetRecord::class
+        );
+        $records = $collection->getRecords();
+        $record = $collection->getNumberOfRecords() > 0 ? reset($records) : null;
+        $this->stopTimer();
+
+        return $record;
+    }
+
+    /**
+     * Build the request data
+     * 
+     * @param string $id
+     * @param string $name
+     * @param string $description
+     * @param bool $disabled
+     * @param bool $allowAllPaths
+     * @param int $type
+     * @param array $attributes
+     * @param array $users
+     * @param array $groups
+     * @param array $paths
+     * @return array
+     */
+    private function composeMetadataSetDefinitionData(
+        string $id,
+        string $name,
+        string $description,
+        bool $disabled,
+        bool $allowAllPaths,
+        int $type,
+        array $attributes,
+        array $users,
+        array $groups,
+        array $paths
+    ): array {
+        // basic fields
+        $data = [
+            'id' => $id,
+            'name' => $name,
+            'description' => $description,
+            'disabled' => json_encode($disabled),
+            'allowallpaths' => json_encode($allowAllPaths),
+            'type' => $type
+        ];
+
+        // attributes
+        $nonStringFields = ['type', 'required', 'disabled'];
+        foreach ($attributes as $i => $attribute) {
+            foreach ($attribute as $fieldName => $fieldValue) {
+                $transformedFieldValue = $fieldValue;
+                if (in_array($fieldName, $nonStringFields)) {
+                    $transformedFieldValue = json_encode($fieldValue);
+                }
+
+                if ($fieldName === 'defaultvalue') {
+                    $transformedFieldValue = $this->reverseCastFromType($fieldValue, $data["attribute{$i}_type"]);
+                }
+                
+                if ($fieldName === 'predefinedvalue') {
+                    foreach ($fieldValue as $j => $val) {
+                        $data["attribute{$i}_predefinedvalue{$j}"] = $val;
+                    }
+                    
+                    continue;
+                }
+
+                $data["attribute{$i}_{$fieldName}"] = $transformedFieldValue;
+            }
+        }
+        $data['attributes_total'] = count($attributes);
+
+        // allowed users
+        foreach ($users as $i => $user) {
+            $data["user{$i}_name"] = $user['name'];
+            $data["user{$i}_read"] = json_encode($user['read']);
+            $data["user{$i}_write"] = json_encode($user['write']);
+        }
+        $data['users_total'] = count($users);
+
+        // allowed groups
+        foreach ($groups as $i => $group) {
+            $data["group{$i}_id"] = $group['id'];
+            $data["group{$i}_name"] = $group['name'];
+            $data["group{$i}_read"] = json_encode($group['read']);
+            $data["group{$i}_write"] = json_encode($group['write']);
+        }
+        $data['groups_total'] = count($groups);
+
+        // allowed paths
+        foreach ($paths as $i => $path) {
+            $data["path{$i}"] = $path;
+        }
+        $data['paths_total'] = count($paths);
+        
+        return $data;
     }
 
     /**
