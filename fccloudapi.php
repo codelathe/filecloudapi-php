@@ -2265,19 +2265,6 @@ class APICore {
         return $buffer;
 	}
 
-    protected function queryToArray($queryString)
-    {
-        $pieces = explode('&', $queryString);
-        $output = [];
-        foreach ($pieces as $piece) {
-            if (strpos($piece, '=') !== false) {
-                [$key, $value] = explode('=', $piece);
-                $output[$key] = $value;
-            }
-        }
-        return $output;
-    }
-
     protected function preRequestDebug()
     {
         // clean up the debug buffer
@@ -2295,7 +2282,9 @@ class APICore {
 
             // request
             $this->debugMessages['Request'] = "$method $url";
-            $this->debugMessages['Request Body'] = json_encode($this->queryToArray($postData));
+            $body = [];
+            parse_str($postData, $body);
+            $this->debugMessages['Request Body'] = $body;
 
             // request headers
             $rawRequest = curl_getinfo($this->curl_handle, CURLINFO_HEADER_OUT);
