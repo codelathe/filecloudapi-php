@@ -2109,6 +2109,10 @@ class PolicyRecord extends DataRecord
 // -----------------------------------------------------------------------
 class APICore {
 
+    // request debug
+    public $debug = false;
+    public $debugMessages = [];
+
     public $curl_handle;
     public $server_url;
     public $start_time;
@@ -2118,8 +2122,9 @@ class APICore {
     public $xsrf_not_set;
     //public $cookie_data;
 
-    public function __construct($SERVER_URL) {
+    public function __construct($SERVER_URL, $debug = false) {
         $this->server_url = $SERVER_URL;
+        $this->debug = $debug;
         $this->init($SERVER_URL);
     }
 
@@ -2184,7 +2189,10 @@ class APICore {
            );
            curl_setopt($this->curl_handle, CURLOPT_HTTPHEADER, $headers);
         }
-        return curl_exec($this->curl_handle);
+        $this->preRequestDebug();
+        $result = curl_exec($this->curl_handle);
+        $result = $this->afterRequestDebug('GET', $url, '', $result, true);
+        return $result;
     }
 
     protected function doPOST($url, $postdata) {
@@ -2206,7 +2214,10 @@ class APICore {
 //           var_dump( $this->cookie_data);
            curl_setopt($this->curl_handle, CURLOPT_HTTPHEADER, $headers);
         }
-        return curl_exec($this->curl_handle);
+        $this->preRequestDebug();
+        $result = curl_exec($this->curl_handle);
+        $result = $this->afterRequestDebug('POST', $url, $postdata, $result, true);
+        return $result;
     }
 	
 	protected function parseHeader($result)
@@ -2254,6 +2265,70 @@ class APICore {
         return $buffer;
 	}
 
+    protected function preRequestDebug()
+    {
+        // clean up the debug buffer
+        $this->debugMessages = [];
+
+        if ($this->debug) {
+            curl_setopt($this->curl_handle, CURLOPT_HEADER, true);
+            curl_setopt($this->curl_handle, CURLINFO_HEADER_OUT, true);
+        }
+    }
+
+    protected function afterRequestDebug(string $method, string $url, string $postData, string $result, $removeHeaders = false): string
+    {
+        if ($this->debug) {
+
+            // request
+            $this->debugMessages['Request'] = "$method $url";
+            $body = [];
+            parse_str($postData, $body);
+            $this->debugMessages['Request Body'] = $body;
+
+            // request headers
+            $rawRequest = curl_getinfo($this->curl_handle, CURLINFO_HEADER_OUT);
+            $lines = explode(PHP_EOL, trim($rawRequest));
+            array_shift($lines); // remove the first line and keep the headers
+            $headers = [];
+            foreach ($lines as $line) {
+                [$header, $value] = explode(':', $line);
+                $headers[trim($header)] = trim($value);
+            }
+            $this->debugMessages['Request Headers'] = $headers;
+
+            // request cookies
+            $rawCookies = curl_getinfo($this->curl_handle, CURLINFO_COOKIELIST);
+            $cookies = [];
+            foreach ($rawCookies as $item) {
+                $pieces = preg_split('/\s+/', $item);
+                $cookies[$pieces[5]] = $pieces[6];
+            }
+            $this->debugMessages['Request Cookies'] = $cookies;
+
+            // Response code
+            $this->debugMessages['Response Code'] = curl_getinfo($this->curl_handle, CURLINFO_HTTP_CODE);
+
+            // Response Headers and body
+            [$rawHeaders, $body] = explode(PHP_EOL . PHP_EOL, $result);
+            $lines = explode(PHP_EOL, trim($rawHeaders));
+            array_shift($lines);
+            $headers = [];
+            foreach ($lines as $line) {
+                [$header, $value] = explode(':', $line);
+                $headers[trim($header)] = trim($value);
+            }
+            $this->debugMessages['Response Headers'] = $headers;
+            $body = trim($body);
+            $this->debugMessages['Response Body'] = $body;
+
+            if ($removeHeaders) {
+                return $body;
+            }
+        }
+        return $result;
+    }
+
     protected function doPOSTWithHeader($url, $postdata) {
         //clear token first
         $this->xsrf_token = "";
@@ -2264,7 +2339,10 @@ class APICore {
         curl_setopt($this->curl_handle, CURLOPT_POSTFIELDS, $postdata);
         curl_setopt($this->curl_handle, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($this->curl_handle, CURLOPT_HEADER, 1);
-        $result =  curl_exec($this->curl_handle);
+        $this->preRequestDebug();
+        $result = curl_exec($this->curl_handle);
+        $this->afterRequestDebug('POST', $url, $postdata, $result);
+
         return $this->parseHeader($result);
     }
     
@@ -2279,7 +2357,10 @@ class APICore {
         curl_setopt($this->curl_handle, CURLOPT_POSTFIELDS, $postdata);
         curl_setopt($this->curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($this->curl_handle, CURLOPT_HEADER, 1);
-        $result = curl_exec($this->curl_handle);	
+        $this->preRequestDebug();
+        $result = curl_exec($this->curl_handle);
+        $this->afterRequestDebug('POST', $url, $postdata, $result);
+
 		return $this->parseHeader($result);
     }    
 
@@ -2371,8 +2452,8 @@ class APICore {
 
 class CloudAPI extends APICore {
     
-    public function __construct($SERVER_URL) {
-        parent::__construct($SERVER_URL);
+    public function __construct($SERVER_URL, $debug = false) {
+        parent::__construct($SERVER_URL, $debug);
     }
 
     public function __destruct() {
@@ -4562,8 +4643,8 @@ class CloudAPI extends APICore {
 class CloudAdminAPI extends APICore
 {
   
-    public function __construct($SERVER_URL) {
-        parent::__construct($SERVER_URL);
+    public function __construct($SERVER_URL, $debug = false) {
+        parent::__construct($SERVER_URL, $debug);
     }
 
     public function __destruct() {
