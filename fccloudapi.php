@@ -2760,6 +2760,8 @@ class APICore {
     }
 
 class CloudAPI extends APICore {
+
+    use MetadataAttributeTypeCasterTrait;
     
     public function __construct($SERVER_URL, $debug = false) {
         parent::__construct($SERVER_URL, $debug);
@@ -4708,8 +4710,6 @@ class CloudAPI extends APICore {
 
         return $record;
     }
-
-    use MetadataAttributeTypeCasterTrait;
     
     /**
      * Update attribute values of a file object's metadata
