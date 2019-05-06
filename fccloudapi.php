@@ -4659,7 +4659,7 @@ class CloudAPI extends APICore {
         $response = $this->doPOST("{$this->server_url}/core/getmetadatasetsforsearch", http_build_query([
             'fullpath' => $fullPath
         ]));
-        $collection = new Collection($response,  'metadataset', AdminMetadataSetRecord::class);
+        $collection = new Collection($response,  'metadataset', MetadataSetRecord::class);
         $this->stopTimer();
 
         return $collection;
