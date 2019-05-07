@@ -2570,7 +2570,7 @@ class APICore {
             // request headers
             $rawRequest = curl_getinfo($this->curl_handle, CURLINFO_HEADER_OUT);
             $rawRequest = str_replace('\r\n', '\n', trim($rawRequest));
-            $lines = explode('\n', trim($rawRequest));
+            $lines = explode('\n', $rawRequest);
             array_shift($lines); // remove the first line and keep the headers
             $headers = [];
             foreach ($lines as $line) {
