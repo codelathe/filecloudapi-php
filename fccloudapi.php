@@ -2559,7 +2559,7 @@ class APICore {
         if ($this->debug) {
 
             // normalize the line breaks
-            $result = str_replace('\r\n', '\n', trim($result));
+            $result = str_replace("\r\n", "\n", trim($result));
 
             // request
             $this->debugMessages['Request'] = "$method $url";
@@ -2569,8 +2569,8 @@ class APICore {
 
             // request headers
             $rawRequest = curl_getinfo($this->curl_handle, CURLINFO_HEADER_OUT);
-            $rawRequest = str_replace('\r\n', '\n', trim($rawRequest));
-            $lines = explode('\n', $rawRequest);
+            $rawRequest = str_replace("\r\n", "\n", trim($rawRequest));
+            $lines = explode("\n", $rawRequest);
             array_shift($lines); // remove the first line and keep the headers
             $headers = [];
             foreach ($lines as $line) {
@@ -2592,8 +2592,8 @@ class APICore {
             $this->debugMessages['Response Code'] = curl_getinfo($this->curl_handle, CURLINFO_HTTP_CODE);
 
             // Response Headers and body
-            [$rawHeaders, $body] = explode('\n\n', $result);
-            $lines = explode('\n', trim($rawHeaders));
+            [$rawHeaders, $body] = explode("\n\n", $result, 2);
+            $lines = explode("\n", trim($rawHeaders));
             array_shift($lines);
             $headers = [];
             foreach ($lines as $line) {
