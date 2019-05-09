@@ -2589,6 +2589,9 @@ class APICore {
     {
         if ($this->debug) {
 
+            // normalize the line breaks
+            $result = str_replace("\r\n", "\n", trim($result));
+
             // request
             $this->debugMessages['Request'] = "$method $url";
             $body = [];
@@ -2597,7 +2600,8 @@ class APICore {
 
             // request headers
             $rawRequest = curl_getinfo($this->curl_handle, CURLINFO_HEADER_OUT);
-            $lines = explode(PHP_EOL, trim($rawRequest));
+            $rawRequest = str_replace("\r\n", "\n", trim($rawRequest));
+            $lines = explode("\n", $rawRequest);
             array_shift($lines); // remove the first line and keep the headers
             $headers = [];
             foreach ($lines as $line) {
@@ -2619,8 +2623,8 @@ class APICore {
             $this->debugMessages['Response Code'] = curl_getinfo($this->curl_handle, CURLINFO_HTTP_CODE);
 
             // Response Headers and body
-            [$rawHeaders, $body] = explode(PHP_EOL . PHP_EOL, $result);
-            $lines = explode(PHP_EOL, trim($rawHeaders));
+            [$rawHeaders, $body] = explode("\n\n", $result, 2);
+            $lines = explode("\n", trim($rawHeaders));
             array_shift($lines);
             $headers = [];
             foreach ($lines as $line) {
@@ -2760,6 +2764,8 @@ class APICore {
     }
 
 class CloudAPI extends APICore {
+
+    use MetadataAttributeTypeCasterTrait;
     
     public function __construct($SERVER_URL, $debug = false) {
         parent::__construct($SERVER_URL, $debug);
@@ -4659,7 +4665,7 @@ class CloudAPI extends APICore {
         $response = $this->doPOST("{$this->server_url}/core/getmetadatasetsforsearch", http_build_query([
             'fullpath' => $fullPath
         ]));
-        $collection = new Collection($response,  'metadataset', AdminMetadataSetRecord::class);
+        $collection = new Collection($response,  'metadataset', MetadataSetRecord::class);
         $this->stopTimer();
 
         return $collection;
@@ -4708,8 +4714,6 @@ class CloudAPI extends APICore {
 
         return $record;
     }
-
-    use MetadataAttributeTypeCasterTrait;
     
     /**
      * Update attribute values of a file object's metadata
