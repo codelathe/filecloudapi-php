@@ -2632,7 +2632,12 @@ class APICore {
             }
 
             // splitting headers and body
-            [$rawHeaders, $body] = explode("\n\n", $result, 2);
+            if (strpos($result, "\n\n") === false) { // requests with no body
+                $rawHeaders = $result;
+                $body = '';
+            } else {
+                [$rawHeaders, $body] = explode("\n\n", $result, 2);
+            }
             $lines = explode("\n", trim($rawHeaders));
             array_shift($lines);
             $headers = [];
