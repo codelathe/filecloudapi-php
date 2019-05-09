@@ -2623,6 +2623,15 @@ class APICore {
             $this->debugMessages['Response Code'] = curl_getinfo($this->curl_handle, CURLINFO_HTTP_CODE);
 
             // Response Headers and body
+
+            // removing 100 and redirect responses
+            $regex = '/^HTTP\/[0-9.]+ [13][0-9]{2} [A-Z][a-z]+/';
+            while (preg_match($regex, $result)) {
+                $result = preg_replace($regex, '', $result);
+                $result = trim($result);
+            }
+
+            // splitting headers and body
             [$rawHeaders, $body] = explode("\n\n", $result, 2);
             $lines = explode("\n", trim($rawHeaders));
             array_shift($lines);
