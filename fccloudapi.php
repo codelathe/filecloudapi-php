@@ -5061,6 +5061,20 @@ class CloudAPI extends APICore {
         }
         return NULL;
     }
+
+    public function logoutProfile()
+    {
+        $this->startTimer();
+        $url = $this->server_url . '/core/?op=logoutprofile';
+        $postdata = '';
+        $buffer = $this->doPOST($url, $postdata);
+        $this->xsrf_token = '';
+        $collection = new Collection($buffer,  'command', CommandRecord::class);
+        $this->stopTimer();
+        if ($collection->getNumberOfRecords() > 0)
+            return $collection->getRecords()[0];
+        return NULL;
+    }
 }
 
 class CloudAdminAPI extends APICore
@@ -7511,5 +7525,3 @@ class CloudAdminAPI extends APICore
         
     }
 }
-    
-?>
