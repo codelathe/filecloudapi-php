@@ -5259,7 +5259,7 @@ class CloudAdminAPI extends APICore
             ])
         );
         $collection = new Collection(
-            "<metadatasets>{$response}</metadatasets>",
+            $response,
             "metadataset",
             AdminMetadataSetRecord::class
         );
