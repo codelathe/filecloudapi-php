@@ -4129,7 +4129,7 @@ class CloudAPI extends APICore {
     public function docEdit($path) {
         $this->startTimer();
         $url = $this->server_url . "/core/docedit";
-        $postdata = 'path' . $path;
+        $postdata = 'path=' . $path;
         $buffer = $this->doPOST($url, $postdata);
         $this->stopTimer();
         return $buffer;
