@@ -4494,7 +4494,7 @@ class CloudAPI extends APICore {
         $collection = new Collection($buffer,  "user", UsersForShareRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
-            return $collection->getRecords()[0];
+            return $collection->getRecords();
         return NULL;
     }
     
