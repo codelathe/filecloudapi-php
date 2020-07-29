@@ -6425,7 +6425,7 @@ class CloudAdminAPI extends APICore
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
             {
-                return $collection;
+                return $collection->getRecords();
             }
         else
             {
