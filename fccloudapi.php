@@ -4483,7 +4483,7 @@ class CloudAPI extends APICore {
         $collection = new Collection($buffer,  "user", UserAcessForShareRecord::class);
         $this->stopTimer();
         if ($collection->getNumberOfRecords() > 0)
-            return $collection->getRecords()[0];
+            return $collection->getRecords();
         return NULL;
     } 
      public function getUsersForShare($shareid) {
