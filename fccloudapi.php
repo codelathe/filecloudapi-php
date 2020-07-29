@@ -4208,7 +4208,7 @@ class CloudAPI extends APICore {
     //---Returns a Command Record
     public function leaveShare($path){
         $this->startTimer();
-        $url = $this->server_url . "/core/leaveShare";
+        $url = $this->server_url . "/core/leaveshare";
         $postdata = 'path=' . $path;
         $buffer = $this->doPOST($url, $postdata);
         $collection = new Collection($buffer,  "command", CommandRecord::class);
