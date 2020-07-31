@@ -3569,7 +3569,7 @@ class CloudAPI extends APICore {
     public function subScribe($emailid) {
         $this->startTimer();
         $url = $this->server_url . "/core/subscribe";
-        $postdata = 'emailid=' . $emailid;
+        $postdata = 'emailid=' . rawurlencode($emailid);
         $buffer = $this->doPOST($url, $postdata);
         return $buffer;
     }
