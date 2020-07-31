@@ -2870,9 +2870,9 @@ class CloudAPI extends APICore {
 
     //---- Logout API
     //RETURNS a CommandRecord
-    public function lockSession() {
+    public function lockSession(bool $isShare = false) {
         $this->startTimer();
-        $url = $this->server_url . "/core/locksession";
+        $url = $this->server_url . "/core/locksession" . ($isShare ? '?share=1' : '');
         $postdata = "";
         $buffer = $this->doPOST($url, $postdata);
 		//$this->cookie_data = array();
