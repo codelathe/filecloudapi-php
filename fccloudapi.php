@@ -4450,10 +4450,10 @@ class CloudAPI extends APICore {
     
     //API for createprofileoninvite
     //---Returns a CommandRecord 
-    public function createProfileOnInvite($emailid){
+    public function createProfileOnInvite($emailid, string $shareId){
         $this->startTimer();
         $url = $this->server_url . "/core/createprofileoninvite";
-        $postdata = 'email=' . $emailid ;
+        $postdata = "email={$emailid}&shareid={$shareId}";
         $buffer = $this->doPOST($url, $postdata);
         $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
