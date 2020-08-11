@@ -3862,7 +3862,7 @@ class CloudAPI extends APICore {
         $url = $this->server_url . "/core/updateshare";
         $postdata = 'shareid='.$shareid.'&sharename='.$sharename.'&sharelocation='.$sharelocation.
                 '&viewmode='.$viewmode.'&validityperiod='.$validityperiod.'&sharesizelimit='.$sharesizelimit
-                .'&maxdownloads='.$maxdownloads.'&hidenotification='.$hidenotification . '&sharepassword=' . $sharepassword;
+                .'&maxdownloads='.$maxdownloads.'&hidenotifications='.$hidenotification . '&sharepassword=' . $sharepassword;
         $buffer = $this->doPOST($url, $postdata);
         if($buffer != NULL)
         {
