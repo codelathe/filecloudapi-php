@@ -4194,8 +4194,8 @@ class CloudAPI extends APICore {
     public function setGroupAccessforShare($shareid, $groupid, $download, $write, $share, $sync, $disallowdelete){
         $this->startTimer();
         $url = $this->server_url . "/core/setgroupaccessforshare";
-        $postdata = 'groupid=' . $groupid . '&shareid=' . $shareid . '&write='  . $write.  '&share='  . $share. 
-                '&sync='  . $sync. '&disallowdelete='  . $disallowdelete;
+        $postdata = 'groupid=' . $groupid . '&shareid=' . $shareid . '&write='  . $write.  '&share='  . $share.
+            '&sync='  . $sync. '&disallowdelete='  . $disallowdelete . '&download=' . $download;
         $buffer = $this->doPOST($url, $postdata);
         $collection = new Collection($buffer,  "command", CommandRecord::class);
         $this->stopTimer();
