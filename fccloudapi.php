@@ -2534,8 +2534,8 @@ class APICore {
 		  //Check if http success code 200
         $httpcode = curl_getinfo($this->curl_handle, CURLINFO_HTTP_CODE);
 	    if ($httpcode!='200' ) {
-            echo "Failed to login, Check DB status or Login Credentials Incorrect";
-            exit(0);
+            echo "Failed to login, Check DB status or Login Credentials Incorrect, httpcode:". $httpcode;
+            //exit(0);
         }
         
         //Get Cookie value
@@ -5258,8 +5258,9 @@ class CloudAdminAPI extends APICore
                 'setId' => $setId,
             ])
         );
+
         $collection = new Collection(
-            "<metadatasets>{$response}</metadatasets>",
+            $response,
             "metadataset",
             AdminMetadataSetRecord::class
         );
